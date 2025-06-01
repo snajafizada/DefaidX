@@ -59,11 +59,7 @@ def show_home():
     codes_df = pd.read_csv(codes_path)
 
     df = df.merge(codes_df[['Country', 'ISO3']], on='Country', how='left')
-
-    # Filter missing Defense_USD
     df = df[df["Defense_USD"].notna()]
-
-    # Convert Year to int and sort, set ordered categorical for animation
     df["Year"] = pd.to_numeric(df["Year"], errors="coerce")
     df = df.dropna(subset=["Year"])
     df["Year"] = df["Year"].astype(int)
@@ -73,40 +69,41 @@ def show_home():
 
     fig = px.scatter(
         df,
-        x="Defense_USD",
-        y="Continent",
+        x="Continent",
+        y="Defense_USD",
         animation_frame="Year",
         animation_group="Country",
         size="Defense_USD",
         color="Continent",
         hover_name="Country",
-        log_x=True,
-        size_max=30,
-        range_x=[100, df["Defense_USD"].max()],
+        log_y=True,
+        size_max=60,
+        range_y=[100, df["Defense_USD"].max()],
         title="Global Defense Spending (1990–2023)",
         labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"}
     )
 
     fig.update_layout(
-        height=550,
-        title_x=0.5,
-        title_y=0.95,  # lifts title upward inside margin
+        height=600,
+        title_x=0.0,  # More to the left
+        title_font=dict(size=20),
         plot_bgcolor="black",
         paper_bgcolor="black",
         font=dict(color="white"),
-        margin=dict(t=80, b=70, l=50, r=30),  # more top margin for spacing
-        showlegend=False,
+        margin=dict(t=60, b=60, l=50, r=30),
         xaxis=dict(
-            tickangle=-90,   # vertical country names
-            showgrid=False,  # no vertical grid lines
-            zeroline=False,
+            tickangle=-90,
+            showgrid=False,
+            zeroline=False
         ),
         yaxis=dict(
-            showgrid=True,    # horizontal grid lines visible
+            showgrid=True,
             gridcolor='gray',
             zeroline=False,
-            type='category'  # keep continent as categorical axis
+            type='log',
+            range=[2, None]
         ),
+        showlegend=False,
         updatemenus=[dict(
             type="buttons",
             x=0.05,
@@ -123,7 +120,7 @@ def show_home():
 
     fig.update_traces(
         marker=dict(line=dict(width=1, color="gray")),
-        textfont=dict(color='white')  # visible on dark bg
+        textfont=dict(color='white')
     )
 
     st.plotly_chart(fig, use_container_width=True)
