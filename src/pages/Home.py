@@ -88,30 +88,36 @@ def show_home():
     )
 
     fig.update_layout(
-        height=550,
-        title_x=0.5,
-        plot_bgcolor="black",
-        paper_bgcolor="black",
-        font=dict(color="white"),
-        margin=dict(t=40, b=50, l=50, r=30),
-        showlegend=False,
-        updatemenus=[dict(
-            type="buttons",
-            x=0.05,
-            y=-0.1,
-            buttons=[
-                dict(label="Play", method="animate",
-                     args=[None, dict(frame=dict(duration=500, redraw=True), fromcurrent=True)]),
-                dict(label="Pause", method="animate",
-                     args=[[None], dict(frame=dict(duration=0, redraw=False), mode="immediate",
-                                        transition=dict(duration=0))])
-            ]
-        )]
-    )
-
-    fig.update_traces(
-        marker=dict(line=dict(width=1, color="gray")),
-        textfont=dict(color='white')
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
+    height=550,
+    title_x=0.5,
+    title_y=0.95,  # lifts title up a bit
+    plot_bgcolor="black",
+    paper_bgcolor="black",
+    font=dict(color="white"),
+    margin=dict(t=80, b=70, l=50, r=30),
+    showlegend=False,
+    xaxis=dict(
+        tickangle=-90,
+        showgrid=False,   # no vertical grid lines
+        zeroline=False,
+    ),
+    yaxis=dict(
+        showgrid=True,    # show horizontal grid lines
+        gridcolor='gray',
+        zeroline=False,
+        type='log',
+        range=[2, None]  # approx log10(100)=2, matches range_x for Defense_USD
+    ),
+    updatemenus=[dict(
+        type="buttons",
+        x=0.05,
+        y=-0.1,
+        buttons=[
+            dict(label="Play", method="animate",
+                 args=[None, dict(frame=dict(duration=500, redraw=True), fromcurrent=True)]),
+            dict(label="Pause", method="animate",
+                 args=[[None], dict(frame=dict(duration=0, redraw=False), mode="immediate",
+                                    transition=dict(duration=0))])
+        ]
+    )]
+)
