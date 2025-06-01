@@ -73,51 +73,57 @@ def show_home():
 
     fig = px.scatter(
         df,
-        x="Continent",
-        y="Defense_USD",
+        x="Defense_USD",
+        y="Continent",
         animation_frame="Year",
         animation_group="Country",
         size="Defense_USD",
         color="Continent",
         hover_name="Country",
-        log_y=True,
+        log_x=True,
         size_max=30,
-        range_y=[100, df["Defense_USD"].max()],
+        range_x=[100, df["Defense_USD"].max()],
         title="Global Defense Spending (1990–2023)",
         labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"}
     )
 
     fig.update_layout(
-    height=550,
-    title_x=0.5,
-    title_y=0.95,  # lifts title up a bit
-    plot_bgcolor="black",
-    paper_bgcolor="black",
-    font=dict(color="white"),
-    margin=dict(t=80, b=70, l=50, r=30),
-    showlegend=False,
-    xaxis=dict(
-        tickangle=-90,
-        showgrid=False,   # no vertical grid lines
-        zeroline=False,
-    ),
-    yaxis=dict(
-        showgrid=True,    # show horizontal grid lines
-        gridcolor='gray',
-        zeroline=False,
-        type='log',
-        range=[2, None]  # approx log10(100)=2, matches range_x for Defense_USD
-    ),
-    updatemenus=[dict(
-        type="buttons",
-        x=0.05,
-        y=-0.1,
-        buttons=[
-            dict(label="Play", method="animate",
-                 args=[None, dict(frame=dict(duration=500, redraw=True), fromcurrent=True)]),
-            dict(label="Pause", method="animate",
-                 args=[[None], dict(frame=dict(duration=0, redraw=False), mode="immediate",
-                                    transition=dict(duration=0))])
-        ]
-    )]
-)
+        height=550,
+        title_x=0.5,
+        title_y=0.95,  # lifts title upward inside margin
+        plot_bgcolor="black",
+        paper_bgcolor="black",
+        font=dict(color="white"),
+        margin=dict(t=80, b=70, l=50, r=30),  # more top margin for spacing
+        showlegend=False,
+        xaxis=dict(
+            tickangle=-90,   # vertical country names
+            showgrid=False,  # no vertical grid lines
+            zeroline=False,
+        ),
+        yaxis=dict(
+            showgrid=True,    # horizontal grid lines visible
+            gridcolor='gray',
+            zeroline=False,
+            type='category'  # keep continent as categorical axis
+        ),
+        updatemenus=[dict(
+            type="buttons",
+            x=0.05,
+            y=-0.1,
+            buttons=[
+                dict(label="Play", method="animate",
+                     args=[None, dict(frame=dict(duration=500, redraw=True), fromcurrent=True)]),
+                dict(label="Pause", method="animate",
+                     args=[[None], dict(frame=dict(duration=0, redraw=False), mode="immediate",
+                                        transition=dict(duration=0))])
+            ]
+        )]
+    )
+
+    fig.update_traces(
+        marker=dict(line=dict(width=1, color="gray")),
+        textfont=dict(color='white')  # visible on dark bg
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
