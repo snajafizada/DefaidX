@@ -35,7 +35,7 @@ def show_home():
         )
         if st.button("Go to Explore"):
             st.session_state["page"] = "Explore"
-            st.rerun()
+            st.experimental_rerun()
 
     with col2:
         st.subheader("🧠 Insights")
@@ -45,18 +45,23 @@ def show_home():
         )
         if st.button("Go to Insights"):
             st.session_state["page"] = "Insights"
-            st.rerun()
+            st.experimental_rerun()
 
     st.markdown("<hr style='border-color:#444;'>", unsafe_allow_html=True)
     st.info("🚧 More features coming soon!")
 
-
     # Load defense spending data
     data_path = "data/clean/all/merged_long_1992-2023.csv"
     df = pd.read_csv(data_path)
-    
+
     df = df[df["Defense_USD"].notna()]  # Filter out rows with missing Defense_Spending
-    
+
+    # Convert Year to integer to ensure correct animation order
+    df["Year"] = pd.to_numeric(df["Year"], errors='coerce')
+    df = df.dropna(subset=["Year"])
+    df["Year"] = df["Year"].astype(int)
+
+    # Load country codes
     codes_path = "data/clean/all/country_coordinates.csv"
     codes_df = pd.read_csv(codes_path)
 
