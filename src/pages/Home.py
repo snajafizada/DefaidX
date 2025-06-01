@@ -35,7 +35,7 @@ def show_home():
         )
         if st.button("Go to Explore"):
             st.session_state["page"] = "Explore"
-            st.rerun()
+            st.experimental_rerun()
 
     with col2:
         st.subheader("🧠 Insights")
@@ -45,7 +45,7 @@ def show_home():
         )
         if st.button("Go to Insights"):
             st.session_state["page"] = "Insights"
-            st.rerun()
+            st.experimental_rerun()
 
     st.markdown("<hr style='border-color:#444;'>", unsafe_allow_html=True)
     st.info("🚧 More features coming soon!")
@@ -71,52 +71,47 @@ def show_home():
     years_sorted = sorted(df["Year"].unique())
     df["Year"] = pd.Categorical(df["Year"], categories=years_sorted, ordered=True)
 
-    st.markdown(
-        "<div style='color:white; font-size:14px; margin-bottom:10px;'>"
-        "👉 Swipe horizontally on the chart below to view all countries."
-        "</div>",
-        unsafe_allow_html=True,
-    )
-
-    fig = px.bar(
+    fig = px.scatter(
         df,
-        x="Country",
+        x="Continent",
         y="Defense_USD",
-        color="Continent",
         animation_frame="Year",
         animation_group="Country",
-        labels={"Defense_USD": "Defense Spending (Million USD)", "Country": "Country"},
-        title="Defense Spending by Country (1992–2023)",
+        size="Defense_USD",
+        color="Continent",
+        hover_name="Country",
+        log_y=True,
+        size_max=30,
+        range_y=[100, df["Defense_USD"].max()],
+        title="Global Defense Spending (1990–2023)",
+        labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"}
     )
 
     fig.update_layout(
-        height=600,
-        title=dict(
-            text="Defense Spending by Country (1992–2023)",
-            x=0.5,
-            xanchor='center',
-            yanchor='top',
-            font=dict(size=20, color='white')
-        ),
+        height=550,
+        title_x=0.5,
         plot_bgcolor="black",
         paper_bgcolor="black",
-        font=dict(color="white", size=12),
-        margin=dict(t=70, b=120, l=40, r=20),
-        xaxis=dict(
-            tickangle=-45,
-            tickfont=dict(size=9),
-            fixedrange=False,
-            automargin=True,
-            showgrid=False,
-            title="Country",
-        ),
-        yaxis=dict(
-            type="log",
-            title="Defense Spending (log scale)",
-            gridcolor="gray",
-            zeroline=False,
-        ),
-        showlegend=True,
+        font=dict(color="white"),
+        margin=dict(t=40, b=50, l=50, r=30),
+        showlegend=False,
+        updatemenus=[dict(
+            type="buttons",
+            x=0.05,
+            y=-0.1,
+            buttons=[
+                dict(label="Play", method="animate",
+                     args=[None, dict(frame=dict(duration=500, redraw=True), fromcurrent=True)]),
+                dict(label="Pause", method="animate",
+                     args=[[None], dict(frame=dict(duration=0, redraw=False), mode="immediate",
+                                        transition=dict(duration=0))])
+            ]
+        )]
+    )
+
+    fig.update_traces(
+        marker=dict(line=dict(width=1, color="gray")),
+        textfont=dict(color='white')
     )
 
     st.plotly_chart(fig, use_container_width=True)
