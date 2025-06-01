@@ -51,12 +51,12 @@ def show_home():
     st.info("🚧 More features coming soon!")
 
     # Load defense spending data
-    data_path = r"C:\Users\snaja\OneDrive\defaidX\data\clean\all\merged_long_1992-2023.csv"
+    data_path = ("data/clean/all/merged_long_1992-2023.csv")
     df = pd.read_csv(data_path)
 
     df = df[df["Defense_USD"].notna()]  # Filter out rows with missing Defense_Spending
 
-    codes_path = r"C:\Users\snaja\OneDrive\defaidX\data\clean\all\country_coordinates.csv"
+    codes_path = ("data\clean\all\country_coordinates.csv")
     codes_df = pd.read_csv(codes_path)
 
     df = df.merge(codes_df[['Country', 'ISO3']], on='Country', how='left')

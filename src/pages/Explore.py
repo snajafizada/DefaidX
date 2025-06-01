@@ -10,7 +10,7 @@ from embed_visualizations import (
     render_defense_spending_over_time
 )
 
-DATA_PATH = Path("C:/Users/snaja/OneDrive/defaidX/data/clean/all/merged_long_1992-2023.csv")
+DATA_PATH = Path("data/clean/all/merged_long_1992-2023.csv")
 
 def show_explore():
     st.markdown(

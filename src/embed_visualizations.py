@@ -42,7 +42,7 @@ def render_country_defense_trend(df):
 def show_all_visualizations():
     st.title("🌍 Global Defense Spending Visualizations")
 
-    df = pd.read_csv("C:/Users/snaja/OneDrive/defaidX/data/clean/all/merged_long_1992-2023.csv")
+    df = pd.read_csv("data/clean/all/merged_long_1992-2023.csv")
     df["Year"] = df["Year"].astype(str)
 
     render_choropleth_map(df)
