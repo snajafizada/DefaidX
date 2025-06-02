@@ -228,3 +228,55 @@ def create_country_defense_trend(df: pd.DataFrame, selected_countries: list[str]
         **COMMON_LAYOUT
     )
     return fig
+
+
+# ------------------------------------------------------------------ #
+# 📈  Indexed trend – Defense & GDP (dropdown country selector)
+# ------------------------------------------------------------------ #
+def create_defense_gdp_indexed_trend(df: pd.DataFrame, country: str):
+    df = df.dropna(subset=["Defense_USD", "GDP"]).copy()
+    df["Year"] = df["Year"].astype(int)
+
+    sub = df[df["Country"] == country].sort_values("Year")
+    if sub.empty:
+        return None
+
+    base_def, base_gdp = sub.iloc[0][["Defense_USD", "GDP"]]
+    sub["Defense_Indexed"] = sub["Defense_USD"] / base_def * 100
+    sub["GDP_Indexed"] = sub["GDP"] / base_gdp * 100
+
+    fig = go.Figure()
+    fig.add_scatter(
+        x=sub["Year"], y=sub["Defense_Indexed"],
+        mode="lines+markers", name="Defense (Base 100)",
+        text=sub.apply(lambda r: f"{r['Year']}<br>Defense Indexed: {r['Defense_Indexed']:.1f}", axis=1),
+        hoverinfo="text"
+    )
+    fig.add_scatter(
+        x=sub["Year"], y=sub["GDP_Indexed"],
+        mode="lines+markers", name="GDP (Base 100)",
+        text=sub.apply(lambda r: f"{r['Year']}<br>GDP Indexed: {r['GDP_Indexed']:.1f}", axis=1),
+        hoverinfo="text"
+    )
+
+    fig.update_layout(
+        dragmode="pan",
+        uirevision=f"defense_gdp_indexed_trend_{country}",
+        title=f"📈 Defense vs GDP Indexed Trend — {country}",
+        xaxis=dict(
+            title="Year",
+            showgrid=False,
+            zeroline=False,
+            tickfont=dict(color="white")
+        ),
+        yaxis=dict(
+            title="Indexed Value (Base 100)",
+            showgrid=False,
+            zeroline=False,
+            tickfont=dict(color="white")
+        ),
+        **COMMON_LAYOUT
+    )
+    return fig
+
+
