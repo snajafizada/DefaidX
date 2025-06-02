@@ -25,67 +25,56 @@ def show_home():
 
     st.markdown("<hr style='border-color:#444;'>", unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.subheader("📊 Visualizations")
-        st.markdown(
-            "<p style='color:#DDDDDD;'>Interactive dashboards.</p>",
-            unsafe_allow_html=True,
-        )
-        if st.button("Go to Explore"):
-            st.session_state["page"] = "Explore"
-            st.rerun()
-
-    with col2:
-        st.subheader("🧠 Insights")
-        st.markdown(
-            "<p style='color:#DDDDDD;'>Uncover stories behind the data.</p>",
-            unsafe_allow_html=True,
-        )
-        if st.button("Go to Insights"):
-            st.session_state["page"] = "Insights"
-            st.rerun()
+    show_defense_trend_by_continent()  # ← Your hero visual on the homepage
 
     st.markdown("<hr style='border-color:#444;'>", unsafe_allow_html=True)
     st.info("🚧 More features coming soon!")
+
+def show_defense_trend_by_continent():
+    st.markdown("### 🛡️ Defense Spending by Continent Over Time")
 
     # Load data
     data_path = "data/clean/all/merged_long_1992-2023.csv"
     df = pd.read_csv(data_path)
 
-    # Clean data
+    # Clean and prepare
     df = df[df["Defense_USD"].notna()]
     df["Year"] = pd.to_numeric(df["Year"], errors="coerce")
-    df = df.dropna(subset=["Year"])
+    df = df.dropna(subset=["Year", "Continent"])
     df["Year"] = df["Year"].astype(int)
-    df = df.sort_values(["Year", "Country"])
-    years_sorted = sorted(df["Year"].unique())
-    df["Year"] = pd.Categorical(df["Year"], categories=years_sorted, ordered=True)
 
-    # Create figure
-    fig = px.scatter(
-        df,
-        x="Defense_USD",
-        y="Continent",
-        animation_frame="Year",
-        animation_group="Country",
-        size="Defense_USD",
-        color="Continent",
-        hover_name="Country",
-        log_x=True,
-        size_max=60,
-        range_x=[100, df["Defense_USD"].max()],
-        title="Global Defense Spending (1990–2023)",
-        labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"},
+    # Aggregate defense spending by year and continent
+    df_grouped = (
+        df.groupby(["Year", "Continent"])["Defense_USD"]
+        .sum()
+        .reset_index()
     )
-    
-    #fig.update_layout(
-        #height=500,
-        #paper_bgcolor="#0E1117",
-        #plot_bgcolor="#0E1117",
-        #font_color="#E0E0E0",
-        #margin=dict(l=10, r=10, t=50, b=20),
-        #showlegend=True
-#)
+
+    # Plot
+    fig = px.line(
+        df_grouped,
+        x="Year",
+        y="Defense_USD",
+        color="Continent",
+        markers=True,
+        labels={
+            "Defense_USD": "Defense Spending (Million USD)",
+            "Year": "Year",
+            "Continent": "Continent",
+        },
+        title="Defense Spending by Continent (1992–2023)",
+    )
+
+    # Format
+    fig.update_layout(
+        height=600,
+        margin=dict(t=50, l=20, r=20, b=30),
+        plot_bgcolor="#111111",
+        paper_bgcolor="#111111",
+        font=dict(color="#E0E0E0"),
+        xaxis=dict(tickfont=dict(size=11)),
+        yaxis=dict(tickfont=dict(size=11)),
+        legend=dict(title="", font=dict(size=11)),
+    )
+
     st.plotly_chart(fig, use_container_width=True)
