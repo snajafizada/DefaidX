@@ -7,22 +7,25 @@ import plotly.graph_objects as go
 
 
 COMMON_LAYOUT = dict(
-    width=400,
-    height=800,
-    title_x=0.3,
+    autosize=True,
+    title_x=0.1,
+    dragmode="pan",
+    uirevision=True,
     plot_bgcolor="#111111",
     paper_bgcolor="#111111",
-    font=dict(color="white"),
+    font=dict(color="white", size=12),
     xaxis=dict(showgrid=False, zeroline=False, tickfont=dict(color="white")),
-    # Removed yaxis from here
+    yaxis=dict(showgrid=False, zeroline=False, tickfont=dict(color="white")),
     legend=dict(
-        font=dict(color="white"),
+        font=dict(color="white", size=10),
         orientation="h",
         x=0.5,
         xanchor="center",
-        y=1.05,
-    )
+        y=-0.2
+    ),
+    margin=dict(l=10, r=10, t=60, b=60)
 )
+
 
 
 def create_choropleth_map(df):
@@ -102,6 +105,13 @@ def create_defense_gdp_indexed_trend(df):
     ))
 
     fig.update_layout(
+    dragmode="pan",
+    uirevision=True,
+    **COMMON_LAYOUT
+)
+
+
+    fig.update_layout(
         title=dict(
             text=f"📈 Defense Spending & GDP Indexed Trend: {init_country}",
             #font=dict(size=16, color="white"),
@@ -113,11 +123,12 @@ def create_defense_gdp_indexed_trend(df):
         type="dropdown",
         direction="down",
         showactive=True,
-        x=1,
-        y=1.15,
-        xanchor="right",
-        font=dict(color="white"),
+        x=0.5,
+        y=-0.2,
+        xanchor="center",
+        font=dict(color="white", size=12),
         bgcolor="#333",
+        pad=dict(r=10, t=10),
         buttons=[
             dict(
                 label=country,

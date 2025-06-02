@@ -3,7 +3,8 @@ import sys
 import os
 
 # ── MUST be first Streamlit command ───────────────────────────────────────
-st.set_page_config(page_title="DefaidX – Data-Driven Insights", layout="wide")
+st.set_page_config(page_title="Defaidtics", layout="wide")
+
 
 # ── Make src/ importable ──────────────────────────────────────────────────
 sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
