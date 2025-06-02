@@ -91,7 +91,7 @@ def show_home():
         plot_bgcolor="black",
         paper_bgcolor="black",
         font=dict(color="white", size=10),  # smaller font
-        margin=dict(t=40, b=40, l=40, r=20),
+        margin=dict(t=80, b=40, l=40, r=20),
         showlegend=False,
         xaxis=dict(
             type='category',
