@@ -18,7 +18,7 @@ import plotly.graph_objects as go
 COMMON_LAYOUT = dict(
     autosize=True,
     height=500,
-    title_x=0.5,
+    title_x=0.3,
     title_y= 0.90,
     plot_bgcolor="#111111",
     paper_bgcolor="#111111",
@@ -32,8 +32,6 @@ COMMON_LAYOUT = dict(
     )
 )
 
-# ------------------------------------------------------------------ #
-# 🗺️  Choropleth – Defense spending as % of GDP
 # ------------------------------------------------------------------ #
 def create_choropleth_map(df: pd.DataFrame):
     fig = px.choropleth(
@@ -57,15 +55,21 @@ def create_choropleth_map(df: pd.DataFrame):
     )
 
     fig.update_layout(
-        dragmode="pan",
+        dragmode="zoom",  # allows zooming directly on the map
         uirevision="choropleth_map",
         coloraxis_colorbar=dict(
+            orientation="h",
+            x=0.5,
+            xanchor="center",
+            y=1.1,  # move above the map
             title=dict(text="Defense % of GDP", font=dict(color="white")),
             tickfont=dict(color="white")
         ),
         **COMMON_LAYOUT
     )
+
     return fig
+
 
 
 # ------------------------------------------------------------------ #
@@ -136,18 +140,32 @@ def create_defense_vs_gdp_scatter_excluding_usa_china(df):
         animation_group='Country',
         color='Continent',
         hover_name='Country',
-        size='Defense_USD',  # size cannot contain NaNs now
+        size='Defense_USD',  
         size_max=40,
         log_x=True,
         log_y=True,
         labels={
-            "GDP": "GDP (USD, log scale)",
-            "Defense_USD": "Defense Spending (USD, log scale)"
+            "GDP": "GDP (trillions USD)",
+            "Defense_USD": "Defense Spending (millions USD)"
         },
-        title="Defense Spending vs GDP (Excluding USA & China)",
+        title="Defense Spending vs GDP (without USA and China)",
     )
 
-    fig.update_layout(**COMMON_LAYOUT)
+
+    # Clean layout: remove grid lines
+    fig.update_xaxes(showgrid=False, zeroline=False)
+    fig.update_yaxes(showgrid=False, zeroline=False)
+
+    fig.update_layout(
+        legend=dict(
+            orientation="h",
+            y=1,                # ⬆️ moves it above the title
+            x=0.5,
+            xanchor="center",
+            font=dict(color="white")
+        ),
+        margin=dict(l=10, r=10, t=80, b=80),
+        **COMMON_LAYOUT)
     return fig
 
 
@@ -190,37 +208,43 @@ def create_defense_spending_over_time(df: pd.DataFrame):
 # 🏆  Animated bar race – Top 20 spenders
 # ------------------------------------------------------------------ #
 def create_country_defense_bar_animation(df: pd.DataFrame):
-    df = df.copy()
-    df["Year"] = df["Year"].astype(str)
-
-    # For each year, top 20 countries by Defense_USD
-    top20 = (
-        df.groupby("Year", group_keys=False)
-          .apply(lambda d: d.nlargest(20, "Defense_USD"))
+    df_ranked = (
+        df.groupby(["Year", "Country"], as_index=False)["Defense_USD"].sum()
+        .sort_values(["Year", "Defense_USD"], ascending=[True, False])
     )
-    top20["Rank"] = top20.groupby("Year")["Defense_USD"].rank("first", ascending=False)
-    top20.sort_values(["Year", "Rank"], inplace=True)
-
-    max_defense = top20["Defense_USD"].max() * 1.1
+    df_ranked["Rank"] = df_ranked.groupby("Year")["Defense_USD"].rank(ascending=False, method="first")
+    df_top20 = df_ranked[df_ranked["Rank"] <= 20]
 
     fig = px.bar(
-        top20, x="Defense_USD", y="Country", orientation="h",
-        animation_frame="Year", color="Country",
-        range_x=[0, max_defense],
-        template="plotly_dark",
-        labels={"Defense_USD": "Defense Spending (millions USD)"}
+        df_top20,
+        x="Defense_USD",
+        y="Country",
+        orientation="h",
+        animation_frame="Year",
+        color="Country",
+        title="🏆 Top 20 Defense Spenders Over Time",
+        labels={"Defense_USD": "Defense Spending (USD)"},
+        template="plotly_dark"
     )
 
     fig.update_layout(
-        dragmode="pan",
-        uirevision="country_defense_bar_animation",
-        title="🏆 Top 20 Defense Spenders by Year",
-        yaxis=dict(title="", categoryorder="total ascending"),
-        showlegend=False,
-        **COMMON_LAYOUT
-    )
-    return fig
+    xaxis=dict(
+        range=[0, 900000],
+        title="Defense Spending (millions USD)",
+        showgrid=False,
+        tickfont=dict(color="white")
+    ),
+    yaxis=dict(
+        title="",
+        tickfont=dict(color="white")
+    ),
+    bargap=0.05,  
+    uirevision="country_defense_bar_animation",
+    showlegend=False,
+    **COMMON_LAYOUT
+)
 
+    return fig
 
 def create_country_defense_trend(df: pd.DataFrame, selected_countries: list[str]):
     if not selected_countries:
@@ -247,6 +271,7 @@ def create_country_defense_trend(df: pd.DataFrame, selected_countries: list[str]
         ),
         yaxis=dict(
             title="Defense Spending (millions USD)",
+            range=[0, 900000],  
             showgrid=False,
             zeroline=False,
             tickfont=dict(color="white")
