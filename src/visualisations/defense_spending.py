@@ -60,7 +60,7 @@ def create_choropleth_map(df: pd.DataFrame):
 
     fig.update_layout(
         dragmode="pan",
-        uirevision=True,
+        uirevision="choropleth_map",
         coloraxis_colorbar=dict(
             title=dict(text="Defense % of GDP", font=dict(color="white")),
             tickfont=dict(color="white")
@@ -105,7 +105,7 @@ def create_defense_gdp_indexed_trend(df: pd.DataFrame):
     # mobile-friendly dropdown centred below chart
     fig.update_layout(
         dragmode="pan",
-        uirevision=True,
+        uirevision="defense_gdp_indexed_trend",
         title=f"📈 Defense vs GDP Indexed Trend — {init}",
         updatemenus=[dict(
             type="dropdown", direction="down", showactive=True,
@@ -161,7 +161,7 @@ def create_defense_vs_gdp_scatter_excluding_usa_china(df: pd.DataFrame):
 
     fig.update_layout(
         dragmode="pan",
-        uirevision=True,
+        uirevision="defense_vs_gdp_scatter_excl_usa_china",
         xaxis=dict(title="Defense Spending (millions USD)", tickformat=","),
         yaxis=dict(title="GDP (millions USD)", tickformat=","),
         **COMMON_LAYOUT
@@ -181,7 +181,12 @@ def create_defense_spending_over_time(df: pd.DataFrame):
         title="🕒 Defense Spending Over Time by Continent",
         template="plotly_dark"
     )
-    fig.update_layout(dragmode="pan", uirevision=True, hovermode="x unified", **COMMON_LAYOUT)
+    fig.update_layout(
+        dragmode="pan",
+        uirevision="defense_spending_over_time",
+        hovermode="x unified",
+        **COMMON_LAYOUT
+    )
     return fig
 
 
@@ -207,7 +212,7 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
 
     fig.update_layout(
         dragmode="pan",
-        uirevision=True,
+        uirevision="country_defense_bar_animation",
         title="🏆 Top 20 Defense Spenders by Year",
         yaxis=dict(title="", categoryorder="total ascending"),
         showlegend=False,
@@ -235,6 +240,10 @@ def create_country_defense_trend(df: pd.DataFrame):
         title="🧭 Defense Spending Over Time by Country",
         template="plotly_dark"
     )
-    fig.update_layout(dragmode="pan", uirevision=True, hovermode="x unified", **COMMON_LAYOUT)
+    fig.update_layout(
+        dragmode="pan",
+        uirevision="country_defense_trend_multiselect",
+        hovermode="x unified",
+        **COMMON_LAYOUT
+    )
     return fig
-
