@@ -79,8 +79,8 @@ def show_home():
     title="Global Defense Spending (1990–2023)",
     labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"},
 )
+    
     fig.update_layout(
-    autosize=True,
     height=500,
     margin=dict(l=10, r=10, t=50, b=20),
     showlegend=False,
@@ -88,12 +88,12 @@ def show_home():
     xaxis=dict(
         tickfont=dict(size=11),
         titlefont=dict(size=13),
-        title="Region (Continent)"
+        title="Defense Spending (Million USD, log scale)"
     ),
     yaxis=dict(
         tickfont=dict(size=11),
         titlefont=dict(size=13),
-        title="Defense Spending (Million USD, log scale)"
+        title="Region (Continent)"
     ),
     plot_bgcolor="#0E1117",
     paper_bgcolor="#0E1117",
