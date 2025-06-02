@@ -35,7 +35,7 @@ def show_home():
         )
         if st.button("Go to Explore"):
             st.session_state["page"] = "Explore"
-            st.experimental_rerun()
+            st.rerun()
 
     with col2:
         st.subheader("🧠 Insights")
@@ -45,7 +45,7 @@ def show_home():
         )
         if st.button("Go to Insights"):
             st.session_state["page"] = "Insights"
-            st.experimental_rerun()
+            st.rerun()
 
     st.markdown("<hr style='border-color:#444;'>", unsafe_allow_html=True)
     st.info("🚧 More features coming soon!")
@@ -80,12 +80,12 @@ def show_home():
         labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"},
     )
     
-    fig.update_layout(
+    #fig.update_layout(
         #height=500,
-        paper_bgcolor="#0E1117",
-        plot_bgcolor="#0E1117",
+        #paper_bgcolor="#0E1117",
+        #plot_bgcolor="#0E1117",
         #font_color="#E0E0E0",
-        margin=dict(l=10, r=10, t=50, b=20),
-        showlegend=True
-)
+        #margin=dict(l=10, r=10, t=50, b=20),
+        #showlegend=True
+#)
     st.plotly_chart(fig, use_container_width=True)
