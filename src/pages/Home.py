@@ -12,7 +12,7 @@ def show_home():
         """
         <p style='font-size:18px;color:#E0E0E0;line-height:1.7;'>
             Curious how the world’s priorities are shifting between power and progress?<br>
-            <strong>DefaidX</strong> lets you explore the evolution of global spending on arms versus aid —
+            <strong>DefaidX</strong> lets you explore the evolution of global spending on arms versus aid — 
             revealing the stories behind the numbers shaping the future of geopolitics.
         </p>
 
@@ -54,12 +54,6 @@ def show_home():
     data_path = "data/clean/all/merged_long_1992-2023.csv"
     df = pd.read_csv(data_path)
 
-    # Load country codes
-    #codes_path = "data/clean/all/country_coordinates.csv"
-    #codes_df = pd.read_csv(codes_path)
-
-    #df = df.merge(codes_df[['Country', 'ISO3']], on='Country', how='left')
-
     # Filter missing Defense_USD
     df = df[df["Defense_USD"].notna()]
     # Convert Year to int and sort, set ordered categorical 
@@ -69,7 +63,6 @@ def show_home():
     df = df.sort_values(["Year", "Country"])
     years_sorted = sorted(df["Year"].unique())
     df["Year"] = pd.Categorical(df["Year"], categories=years_sorted, ordered=True)
-
 
     fig = px.scatter(
         df,
@@ -81,27 +74,30 @@ def show_home():
         color="Continent",
         hover_name="Country",
         log_x=True,
-        size_max=60, 
+        size_max=60,
         range_x=[100, df["Defense_USD"].max()],
         title="Global Defense Spending (1990–2023)",
-        labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"}
+        labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"},
     )
 
     fig.update_layout(
         autosize=True,
-        width=None,  
-        height=500, 
-        showlegend=False, 
+        height=500,
+        showlegend=False,
         margin=dict(l=10, r=10, t=50, b=20),
-        
-)
-
-        #height=550,  
-        #title_x=0.4,
-        #plot_bgcolor="black",
-        #paper_bgcolor="black",
-        #font=dict(color="white"),
-        #margin=dict(t=30, b=30, l=30, r=30),
-        #showlegend=False,
+        title=dict(font=dict(size=18), x=0.5, xanchor="center"),
+        xaxis=dict(
+            tickfont=dict(size=11),
+            titlefont=dict(size=13),
+            title="Defense Spending (Million USD, log scale)"
+        ),
+        yaxis=dict(
+            tickfont=dict(size=11),
+            titlefont=dict(size=13)
+        ),
+        plot_bgcolor="#0E1117",
+        paper_bgcolor="#0E1117",
+        font=dict(color="#E0E0E0"),
+    )
 
     st.plotly_chart(fig, use_container_width=True)
