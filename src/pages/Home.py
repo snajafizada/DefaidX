@@ -73,36 +73,30 @@ def show_home():
 
     fig = px.scatter(
         df,
-        y="Defense_USD",
-        x="Continent",
+        x="Defense_USD",
+        y="Continent",
         animation_frame="Year",
         animation_group="Country",
         size="Defense_USD",
         color="Continent",
         hover_name="Country",
-        log_y=True,
+        log_x=True,
         size_max=60, 
-        range_y=[100, df["Defense_USD"].max()],
+        range_x=[100, df["Defense_USD"].max()],
         title="Global Defense Spending (1990–2023)",
         labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"}
     )
 
     fig.update_layout(
         autosize=True,
-        width=None,  
+        width=None, 
+        log_y=True, 
         height=500, 
         showlegend=False, 
         margin=dict(l=10, r=10, t=50, b=20),
         
 )
-    xaxis=dict(
-            showgrid=False,
-            gridcolor='gray',
-            zeroline=False,
-            type='log',
-            range=[2, 5.95],  # corresponds to 100 to ~900,000 in log scale
-            title="Defense Spending (Million USD)"
-        ),
+
         #height=550,  
         #title_x=0.4,
         #plot_bgcolor="black",
