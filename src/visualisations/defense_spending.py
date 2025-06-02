@@ -116,57 +116,36 @@ def create_defense_gdp_indexed_trend(df: pd.DataFrame, country: str):
     return fig
 
 
-# ------------------------------------------------------------------ #
-# 📊  Scatter – Defense vs GDP (excluding USA & China)
-# ------------------------------------------------------------------ #
-def create_defense_vs_gdp_scatter_excluding_usa_china(df: pd.DataFrame):
-    # Filter out USA & China
-    df_filtered = df[(df['Country'] != 'United States') & (df['Country'] != 'China')].copy()
+def create_defense_vs_gdp_scatter_excluding_usa_china(df):
+    # Filter out USA and China
+    df = df[(df['Country'] != 'United States') & (df['Country'] != 'China')]
 
-    max_defense = df_filtered["Defense_USD"].max() * 1.1
-    max_gdp = df_filtered["GDP"].max() * 1.1
+    # Drop rows with NaNs in columns used
+    df_clean = df.dropna(subset=['Defense_USD', 'GDP', 'Year', 'Country'])
+
+    if df_clean.empty:
+        return None
 
     fig = px.scatter(
-        df_filtered,
-        x="Defense_USD",
-        y="GDP",
-        animation_frame="Year",
-        animation_group="Country",
-        color="Continent",
-        hover_name="Country",
-        size="Defense_USD",
-        size_max=30,
-        range_x=[0, max_defense],
-        range_y=[0, max_gdp],
+        df_clean,
+        x='GDP',
+        y='Defense_USD',
+        animation_frame='Year',
+        animation_group='Country',
+        color='Continent',
+        hover_name='Country',
+        size='Defense_USD',  # size cannot contain NaNs now
+        size_max=40,
+        log_x=True,
+        log_y=True,
         labels={
-            "Defense_USD": "Defense Spending (millions USD)",
-            "GDP": "GDP (millions USD)",
-            "Continent": "Continent"
+            "GDP": "GDP (USD, log scale)",
+            "Defense_USD": "Defense Spending (USD, log scale)"
         },
         title="Defense Spending vs GDP (Excluding USA & China)",
-        template="plotly_dark"
     )
 
-    fig.update_layout(
-        dragmode="pan",
-        uirevision="defense_vs_gdp_scatter_excluding_usa_china",
-        xaxis=dict(
-            title="Defense Spending (millions USD)",
-            tickformat=",",
-            showgrid=False,
-            zeroline=False,
-            tickfont=dict(color="white")
-        ),
-        yaxis=dict(
-            title="GDP (millions USD)",
-            tickformat=",",
-            showgrid=False,
-            zeroline=False,
-            tickfont=dict(color="white")
-        ),
-        **{k: v for k, v in COMMON_LAYOUT.items() if k not in ['xaxis', 'yaxis']}
-    )
-
+    fig.update_layout(**COMMON_LAYOUT)
     return fig
 
 
