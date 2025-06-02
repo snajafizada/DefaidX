@@ -76,8 +76,8 @@ def show_home():
         color="Continent",
         hover_name="Country",
         log_y=True,
-        size_max=35,  # smaller bubbles
-        range_y=[100, 900000],
+        size_max=55,  # smaller bubbles
+        #range_y=[100, 900000],
         title="Global Defense Spending (1990–2023)",
         labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"}
     )
@@ -85,14 +85,15 @@ def show_home():
     fig.update_layout(
         height=500,  # reduce height for smaller screens
         width=None,  # allow responsive width
-        title_x=0.5,
+        title_x=0.3,
         title_y=0.95,
-        title_font=dict(size=18),
+        title_font=dict(size=16),
         plot_bgcolor="black",
         paper_bgcolor="black",
         font=dict(color="white", size=10),  # smaller font
         margin=dict(t=60, b=40, l=20, r=20),
         showlegend=False,
+
         xaxis=dict(
             type='category',
             categoryorder='array',
@@ -108,7 +109,7 @@ def show_home():
             gridcolor='gray',
             zeroline=False,
             type='log',
-            range=[3, 3],
+            range=[3, 6],
             title="Defense Spending (Million USD)",
             title_font=dict(size=12),
             tickfont=dict(size=9),
