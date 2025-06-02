@@ -2,13 +2,11 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import plotly.express as px
-import plotly.graph_objects as go
 
-
+# Define a reusable layout
 COMMON_LAYOUT = dict(
     autosize=True,
-    title_x=0.1,
+    height=500,
     dragmode="pan",
     uirevision=True,
     plot_bgcolor="#111111",
@@ -21,11 +19,10 @@ COMMON_LAYOUT = dict(
         orientation="h",
         x=0.5,
         xanchor="center",
-        y=-0.2
+        y=-0.25
     ),
     margin=dict(l=10, r=10, t=60, b=60)
 )
-
 
 
 def create_choropleth_map(df):
@@ -42,7 +39,6 @@ def create_choropleth_map(df):
         template="plotly_dark",
         color_continuous_scale="Plasma"
     )
-
     fig.update_layout(
         geo=dict(
             showframe=False,
@@ -56,7 +52,6 @@ def create_choropleth_map(df):
         ),
         **COMMON_LAYOUT
     )
-
     return fig
 
 
@@ -86,7 +81,6 @@ def create_defense_gdp_indexed_trend(df):
 
     init_country = countries[0]
     fig = go.Figure()
-
     fig.add_trace(go.Scatter(
         x=data_dict[init_country]["year"],
         y=data_dict[init_country]["defense_indexed"],
@@ -105,67 +99,47 @@ def create_defense_gdp_indexed_trend(df):
     ))
 
     fig.update_layout(
-    dragmode="pan",
-    uirevision=True,
-    **COMMON_LAYOUT
-)
-
-
-    fig.update_layout(
         title=dict(
             text=f"📈 Defense Spending & GDP Indexed Trend: {init_country}",
-            #font=dict(size=16, color="white"),
-            #x=0.3
+            x=0.3,
+            font=dict(size=16, color="white")
         ),
-
-        updatemenus=[
-    dict(
-        type="dropdown",
-        direction="down",
-        showactive=True,
-        x=0.5,
-        y=-0.2,
-        xanchor="center",
-        font=dict(color="white", size=12),
-        bgcolor="#333",
-        pad=dict(r=10, t=10),
-        buttons=[
-            dict(
-                label=country,
-                method="update",
-                args=[
-                    {
-                        "x": [data_dict[country]["year"]] * 2,
-                        "y": [data_dict[country]["defense_indexed"], data_dict[country]["gdp_indexed"]],
-                        "text": [data_dict[country]["defense_hover"], data_dict[country]["gdp_hover"]],
-                    },
-                    {
-                        "title": {
+        updatemenus=[dict(
+            type="dropdown",
+            direction="down",
+            showactive=True,
+            x=0.5,
+            y=-0.25,
+            xanchor="center",
+            font=dict(color="white", size=12),
+            bgcolor="#333",
+            pad=dict(r=10, t=10),
+            buttons=[
+                dict(
+                    label=country,
+                    method="update",
+                    args=[
+                        {"x": [data_dict[country]["year"]] * 2,
+                         "y": [data_dict[country]["defense_indexed"], data_dict[country]["gdp_indexed"]],
+                         "text": [data_dict[country]["defense_hover"], data_dict[country]["gdp_hover"]]},
+                        {"title": {
                             "text": f"<b>📈 Defense Spending & GDP Indexed Trend: {country}</b>",
                             "x": 0.3,
-                            "font": {"size": 16, "color": "white"}
+                            "font": {"size": 16, "color": "white"}}
                         }
-                    }
-                ]
-            )
-            for country in countries
-        ]
+                    ]
+                )
+                for country in countries
+            ]
+        )],
+        **COMMON_LAYOUT
     )
-],
-    **COMMON_LAYOUT
-    )
-
     return fig
 
 
-
 def create_defense_vs_gdp_scatter_excluding_usa_china(df):
-    # filter out USA & China and rows with missing values
-    df = (
-        df[~df["Country"].isin(["United States", "China"])]
-        .dropna(subset=["GDP", "Defense_USD"])
-        .copy()
-    )
+    df = df[~df["Country"].isin(["United States", "China"])]
+    df = df.dropna(subset=["GDP", "Defense_USD"]).copy()
 
     fig = px.scatter(
         df,
@@ -179,43 +153,30 @@ def create_defense_vs_gdp_scatter_excluding_usa_china(df):
         animation_group="Country",
         size_max=60,
         title="📊 Defense Spending vs GDP Over Time (Excluding USA & China)",
-        template="plotly_dark",
+        template="plotly_dark"
     )
-
-    # style markers & labels
     fig.update_traces(
         textposition="middle center",
         textfont=dict(size=8, color="black"),
-        marker=dict(line=dict(width=0.5, color="black")),
+        marker=dict(line=dict(width=0.5, color="black"))
     )
-
-    # axis & layout tweaks
     layout_updates = COMMON_LAYOUT.copy()
     layout_updates["xaxis"] = dict(
         title="Defense Spending (USD millions)",
         tickformat=",",
-        range=[0, 130_000],              # 👈 fixed x-axis: 0 → 900 000
+        range=[0, 130_000],
         showgrid=False,
-        zeroline=False,
-        tickfont=dict(color="white"),
+        tickfont=dict(color="white")
     )
     layout_updates["yaxis"] = dict(
         title="GDP (USD millions)",
         tickformat=",",
-        range=[
-            df["GDP"].min() * 0.9,
-            df["GDP"].max() * 1.3,
-        ],
+        range=[df["GDP"].min() * 0.9, df["GDP"].max() * 1.3],
         showgrid=False,
-        zeroline=False,
-        tickfont=dict(color="white"),
+        tickfont=dict(color="white")
     )
-
-    # apply all custom layout settings
     fig.update_layout(**layout_updates)
-
     return fig
-
 
 
 def create_defense_spending_over_time(df):
@@ -226,7 +187,6 @@ def create_defense_spending_over_time(df):
         y="Defense_USD",
         color="Continent",
         markers=True,
-         # 👈 Set x-axis (spending) range here
         title="📈 Defense Spending Over Time by Continent",
         template="plotly_dark"
     )
@@ -250,51 +210,39 @@ def create_country_defense_bar_animation(df):
         .apply(lambda x: x.nlargest(20, "Defense_USD"))
         .copy()
     )
-
-    top_20_per_year["Rank"] = (
-        top_20_per_year.groupby("Year")["Defense_USD"]
-        .rank(method="first", ascending=False)
-    )
+    top_20_per_year["Rank"] = top_20_per_year.groupby("Year")["Defense_USD"].rank(method="first", ascending=False)
     top_20_per_year.sort_values(by=["Year", "Rank"], inplace=True)
 
     fig = px.bar(
-    top_20_per_year,
-    x="Defense_USD",
-    y="Country",
-    orientation="h",
-    animation_frame="Year",
-    color="Country",
-    hover_name="Country",
-    range_x=[0, 900_000],  # 👈 Set x-axis (spending) range here
-    template="plotly_dark",
-    color_discrete_sequence=bloomberg_colors,
-    labels={"Defense_USD": "Defense Spending (USD Millions)"},
-)
+        top_20_per_year,
+        x="Defense_USD",
+        y="Country",
+        orientation="h",
+        animation_frame="Year",
+        color="Country",
+        hover_name="Country",
+        range_x=[0, 900_000],
+        template="plotly_dark",
+        color_discrete_sequence=bloomberg_colors,
+        labels={"Defense_USD": "Defense Spending (USD Millions)"}
+    )
 
     fig.update_layout(
-        title=dict(
-            text="Top 20 Defense Spenders by Year",
-            font=dict(size=16, color="white"),
-            x=0.7,
-            #xanchor="center"
-        ),
-        yaxis=dict(
-            title="",
-            categoryorder="total ascending"
-        ),
+        title=dict(text="Top 20 Defense Spenders by Year", font=dict(size=16, color="white"), x=0.7),
+        yaxis=dict(title="", categoryorder="total ascending"),
         showlegend=False,
         **COMMON_LAYOUT
     )
-
     return fig
 
 
 def create_country_defense_trend(df):
-    selected_countries = st.multiselect(
-        "Select Countries to View Trends",
-        options=sorted(df["Country"].unique()),
-        default=["India", "Germany", "China"]
-    )
+    with st.container():
+        selected_countries = st.multiselect(
+            "Select Countries to View Trends",
+            options=sorted(df["Country"].unique()),
+            default=["India", "Germany", "China"]
+        )
 
     if not selected_countries:
         st.warning("⚠️ Please select at least one country.")
@@ -315,6 +263,3 @@ def create_country_defense_trend(df):
         **COMMON_LAYOUT
     )
     return fig
-
-# Add any other defense spending visualizations you want here,
-# using the same pattern for consistent style.
