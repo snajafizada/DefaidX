@@ -65,39 +65,38 @@ def show_home():
     df["Year"] = pd.Categorical(df["Year"], categories=years_sorted, ordered=True)
 
     fig = px.scatter(
-        df,
-        x="Defense_USD",
-        y="Continent",
-        animation_frame="Year",
-        animation_group="Country",
-        size="Defense_USD",
-        color="Continent",
-        hover_name="Country",
-        log_x=True,
-        size_max=60,
-        range_x=[100, df["Defense_USD"].max()],
-        title="Global Defense Spending (1990–2023)",
-        labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"},
-    )
-
+    df,
+    x="Continent",         # Categories on x-axis now
+    y="Defense_USD",       # Spending on y-axis (vertical)
+    animation_frame="Year",
+    animation_group="Country",
+    size="Defense_USD",
+    color="Continent",
+    hover_name="Country",
+    log_y=True,            # Log scale on y-axis instead of x-axis
+    size_max=60,
+    range_y=[100, df["Defense_USD"].max()],
+    title="Global Defense Spending (1990–2023)",
+    labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"},
+)
     fig.update_layout(
-        autosize=True,
-        height=500,
-        showlegend=False,
-        margin=dict(l=10, r=10, t=50, b=20),
-        title=dict(font=dict(size=18), x=0.5, xanchor="center"),
-        xaxis=dict(
-            tickfont=dict(size=11),
-            titlefont=dict(size=13),
-            title="Defense Spending (Million USD, log scale)"
-        ),
-        yaxis=dict(
-            tickfont=dict(size=11),
-            titlefont=dict(size=13)
-        ),
-        plot_bgcolor="#0E1117",
-        paper_bgcolor="#0E1117",
-        font=dict(color="#E0E0E0"),
-    )
-
+    autosize=True,
+    height=500,
+    margin=dict(l=10, r=10, t=50, b=20),
+    showlegend=False,
+    title=dict(font=dict(size=18), x=0.5, xanchor="center"),
+    xaxis=dict(
+        tickfont=dict(size=11),
+        titlefont=dict(size=13),
+        title="Region (Continent)"
+    ),
+    yaxis=dict(
+        tickfont=dict(size=11),
+        titlefont=dict(size=13),
+        title="Defense Spending (Million USD, log scale)"
+    ),
+    plot_bgcolor="#0E1117",
+    paper_bgcolor="#0E1117",
+    font=dict(color="#E0E0E0"),
+)
     st.plotly_chart(fig, use_container_width=True)
