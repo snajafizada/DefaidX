@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import plotly.express as px
 from visualisations.defense_spending import (
     create_choropleth_map,
     create_defense_vs_gdp_scatter_excluding_usa_china,
@@ -25,8 +26,9 @@ def render_defense_vs_gdp_scatter_excluding_usa_china(df):
     else:
         st.info("No data available for this plot.")
 
-def render_defense_gdp_indexed_trend(df, country):
+def render_defense_gdp_indexed_trend(df):
     st.markdown("### 📈 Indexed Trend: Defense & GDP Over Time")
+    country = st.selectbox("Select Country for Indexed Trend:", sorted(df['Country'].unique()))
     fig = create_defense_gdp_indexed_trend(df, country)
     if fig:
         with st.container():
@@ -48,30 +50,18 @@ def render_country_defense_bar_animation(df):
 
 def render_country_defense_trend(df):
     st.markdown("### 🧭 Country Comparison: Defense Spending Trends")
-    countries = st.multiselect("Select Countries:", sorted(df['Country'].unique()), default=["USA", "China"])
-    if not countries:
-        st.info("Please select at least one country.")
-        return
-    fig = create_country_defense_trend(df, countries)
-    if fig:
-        with st.container():
-            st.plotly_chart(fig, use_container_width=True)
-
-
-def show_all_visualizations():
-    st.title("🌍 Global Defense Spending Visualizations")
     st.markdown(
-        """
-        Below are interactive visualizations of global defense spending trends, GDP comparisons, and country-level insights.
-        All charts are optimized for both desktop and mobile.
-        """
+         "<p style='font-size:16px; color:#E0E0E0;'>Choose countries from the dropdown to explore individual defense spending trends over time.</p>",
+         unsafe_allow_html=True
     )
-    df = pd.read_csv("data/clean/all/merged_long_1992-2023.csv")
-    df["Year"] = df["Year"].astype(str)
-
-    render_choropleth_map(df)
-    render_defense_vs_gdp_scatter_excluding_usa_china(df)
-    render_defense_gdp_indexed_trend(df)
-    render_defense_spending_over_time(df)
-    render_country_defense_bar_animation(df)
-    render_country_defense_trend(df)
+    countries = st.multiselect(
+         "Select Countries:",
+         options=sorted(df["Country"].unique()),
+         default=["United States", "China"]  # or your preferred default
+    )
+    if countries:
+        fig = create_country_defense_trend(df, countries)
+        if fig:
+            st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("Please select at least one country to display the trends.")

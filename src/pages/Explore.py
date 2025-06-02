@@ -39,26 +39,13 @@ def show_explore():
                 render_defense_vs_gdp_scatter_excluding_usa_china(df)
 
                 st.markdown("### 📉 Indexed Trend: Defense Spending & GDP")
-                country = st.selectbox("Select Country for Indexed Trend:", sorted(df['Country'].unique()))
-                render_defense_gdp_indexed_trend(df, country)
+                render_defense_gdp_indexed_trend(df)
 
                 st.markdown("### 🏆 Animated Bar Chart: Top 20 Defense Spenders")
                 render_country_defense_bar_animation(df)
 
                 st.markdown("### 🧭 Country Comparison: Defense Spending Trends")
-                st.markdown(
-                    "<p style='font-size:16px; color:#E0E0E0;'>Choose countries from the dropdown in the chart to explore individual defense spending trends over time.</p>",
-                    unsafe_allow_html=True
-                )
-                countries = st.multiselect(
-                    "Select Countries for Comparison:",
-                    options=sorted(df['Country'].unique()),
-                    default=["USA", "China"]  # or leave empty list []
-                )
-                if countries:
-                    render_country_defense_trend(df, countries)
-                else:
-                    st.info("Please select at least one country to compare.")
+                render_country_defense_trend(df)
 
                 st.markdown("### 🕒 Time Series: Global Defense Spending Over Time")
                 render_defense_spending_over_time(df)
@@ -78,5 +65,5 @@ def show_explore():
                     "<p style='font-size:16px; color:#E0E0E0;'>Visualize the most generous donor countries and major recipient countries from 1992 to 2023.</p>",
                     unsafe_allow_html=True,
                 )
-                # You can call your Aid visualizations here when ready
+                # Placeholder: Call Aid visualizations here when ready
                 # e.g. render_top_donors_recipients_bar_animation(df)
