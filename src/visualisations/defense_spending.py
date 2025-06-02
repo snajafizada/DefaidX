@@ -17,10 +17,10 @@ import plotly.graph_objects as go
 #     and mobile-friendly sizing / behaviour.
 # ------------------------------------------------------------------ #
 COMMON_LAYOUT = dict(
-    autosize=True,        # let Plotly handle width responsively
-    height=500,           # balanced height for phones & desktop
-    dragmode="pan",       # smoother touch scrolling (no zoom jump)
-    uirevision=True,      # preserve current view on rerun
+    autosize=True,
+    height=500,
+    # dragmode removed here
+    uirevision=True,
     plot_bgcolor="#111111",
     paper_bgcolor="#111111",
     font=dict(color="white", size=12),
@@ -34,6 +34,7 @@ COMMON_LAYOUT = dict(
         y=-0.25
     )
 )
+
 
 # ------------------------------------------------------------------ #
 # 🗺️  Choropleth – Defence spending as % of GDP
@@ -60,6 +61,7 @@ def create_choropleth_map(df: pd.DataFrame):
     )
 
     fig.update_layout(
+        dragmode="pan",
         coloraxis_colorbar=dict(
             title=dict(text="Defense % of GDP", font=dict(color="white")),
             tickfont=dict(color="white")
@@ -103,6 +105,7 @@ def create_defense_gdp_indexed_trend(df: pd.DataFrame):
 
     # mobile-friendly dropdown centred below chart
     fig.update_layout(
+        dragmode="pan",
         title=f"📈 Defense vs GDP Indexed Trend — {init}",
         updatemenus=[dict(
             type="dropdown", direction="down", showactive=True,
@@ -157,6 +160,7 @@ def create_defense_vs_gdp_scatter_excluding_usa_china(df: pd.DataFrame):
     )
 
     fig.update_layout(
+        dragmode="pan",
         xaxis=dict(title="Defense Spending (millions USD)", tickformat=","),
         yaxis=dict(title="GDP (millions USD)", tickformat=","),
         **COMMON_LAYOUT
@@ -176,7 +180,7 @@ def create_defense_spending_over_time(df: pd.DataFrame):
         title="🕒 Defense Spending Over Time by Continent",
         template="plotly_dark"
     )
-    fig.update_layout(hovermode="x unified", **COMMON_LAYOUT)
+    fig.update_layout(dragmode="pan", hovermode="x unified", **COMMON_LAYOUT)
     return fig
 
 
@@ -201,6 +205,7 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
     )
 
     fig.update_layout(
+        dragmode="pan",
         title="🏆 Top 20 Defense Spenders by Year",
         yaxis=dict(title="", categoryorder="total ascending"),
         showlegend=False,
@@ -228,6 +233,6 @@ def create_country_defense_trend(df: pd.DataFrame):
         title="🧭 Defense Spending Over Time by Country",
         template="plotly_dark"
     )
-    fig.update_layout(hovermode="x unified", **COMMON_LAYOUT)
+    fig.update_layout(dragmode="pan", hovermode="x unified", **COMMON_LAYOUT)
     return fig
 
