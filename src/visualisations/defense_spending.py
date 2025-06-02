@@ -33,7 +33,6 @@ COMMON_LAYOUT = dict(
     )
 )
 
-
 # ------------------------------------------------------------------ #
 # 🗺️  Choropleth – Defence spending as % of GDP
 # ------------------------------------------------------------------ #
@@ -137,8 +136,7 @@ def create_defense_gdp_indexed_trend(df: pd.DataFrame):
 # 📊  Scatter – Defence vs GDP (excluding USA & China)
 # ------------------------------------------------------------------ #
 def create_defense_vs_gdp_scatter_excluding_usa_china(df: pd.DataFrame):
-    df = df[~df["Country"].isin(["United States", "China"])]
-    df = df.dropna(subset=["GDP", "Defense_USD"]).copy()
+    df = df[~df["Country"].isin(["United States", "China"])].dropna(subset=["GDP", "Defense_USD"]).copy()
 
     fig = px.scatter(
         df,
@@ -159,12 +157,17 @@ def create_defense_vs_gdp_scatter_excluding_usa_china(df: pd.DataFrame):
         textfont=dict(size=8, color="black")
     )
 
-    fig.update_layout(
+    # Use COMMON_LAYOUT but override xaxis and yaxis titles here carefully to avoid duplicate keys
+    layout_update = dict(
         dragmode="pan",
         uirevision="defense_vs_gdp_scatter_excluding_usa_china",
-        xaxis=dict(title="Defense Spending (millions USD)", tickformat=","),
-        yaxis=dict(title="GDP (millions USD)", tickformat=","),
-        **COMMON_LAYOUT
+        xaxis=dict(title="Defense Spending (millions USD)", tickformat=",", showgrid=False, zeroline=False, tickfont=dict(color="white")),
+        yaxis=dict(title="GDP (millions USD)", tickformat=",", showgrid=False, zeroline=False, tickfont=dict(color="white"))
+    )
+
+    fig.update_layout(
+        **COMMON_LAYOUT,
+        **layout_update
     )
     return fig
 
@@ -197,8 +200,10 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
     df = df.copy()
     df["Year"] = df["Year"].astype(str)
 
-    top20 = (df.groupby("Year", group_keys=False)
-               .apply(lambda d: d.nlargest(20, "Defense_USD")))
+    top20 = (
+        df.groupby("Year", group_keys=False)
+          .apply(lambda d: d.nlargest(20, "Defense_USD"))
+    )
     top20["Rank"] = top20.groupby("Year")["Defense_USD"].rank("first", ascending=False)
     top20.sort_values(["Year", "Rank"], inplace=True)
 
@@ -242,7 +247,7 @@ def create_country_defense_trend(df: pd.DataFrame):
     )
     fig.update_layout(
         dragmode="pan",
-        uirevision="country_defense_trend_multiselect",
+        uirevision="country_defense_trend",
         hovermode="x unified",
         **COMMON_LAYOUT
     )
