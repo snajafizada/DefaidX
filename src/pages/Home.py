@@ -86,12 +86,12 @@ def show_home():
         height=600,  
         width=None,  
         title_x=0.2,
-        title_y=0.85,
+        title_y=1,
         title_font=dict(size=16),
         plot_bgcolor="black",
         paper_bgcolor="black",
         font=dict(color="white", size=10),  # smaller font
-        margin=dict(t=80, b=40, l=10, r=20),
+        margin=dict(t=90, b=40, l=10, r=20),
         showlegend=False,
 
         xaxis=dict(
@@ -116,8 +116,8 @@ def show_home():
         ),
         updatemenus=[dict(
             type="buttons",
-            x=0.1,
-            y=-0.5,
+            x=0.05,
+            y=-0.1,
             buttons=[
                 dict(label="Play", method="animate",
                      args=[None, dict(frame=dict(duration=500, redraw=True), fromcurrent=True)]),
