@@ -38,13 +38,12 @@ def show_explore():
                 render_defense_vs_gdp_scatter_excluding_usa_china(df)
 
                 st.markdown("### 📉 Indexed Trend: Defense Spending & GDP")
-                
+
                 # Add a country selector for the user to choose the country for the indexed trend
                 country = st.selectbox("Select Country for Indexed Trend:", sorted(df['Country'].unique()))
                 
-                # Now call the function with both df and the selected country
-                fig = render_defense_gdp_indexed_trend(df, country)
-                st.plotly_chart(fig, use_container_width=True)
+                # Call the render function with df and selected country
+                render_defense_gdp_indexed_trend(df, country)
 
                 st.markdown("### 🏆 Animated Bar Chart: Top 20 Defense Spenders")
                 render_country_defense_bar_animation(df)
