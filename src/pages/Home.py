@@ -32,14 +32,14 @@ def show_home():
         st.markdown("<p style='color:#DDDDDD;'>Interactive dashboards.</p>", unsafe_allow_html=True)
         if st.button("Go to Explore"):
             st.session_state["page"] = "Explore"
-            st.experimental_rerun()
+            st.rerun()
 
     with col2:
         st.subheader("🧠 Insights")
         st.markdown("<p style='color:#DDDDDD;'>Uncover stories behind the data.</p>", unsafe_allow_html=True)
         if st.button("Go to Insights"):
             st.session_state["page"] = "Insights"
-            st.experimental_rerun()
+            st.rerun()
 
     st.markdown("<hr style='border-color:#444;'>", unsafe_allow_html=True)
     st.info("🚧 More features coming soon!")
