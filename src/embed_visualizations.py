@@ -25,9 +25,9 @@ def render_defense_vs_gdp_scatter_excluding_usa_china(df):
     else:
         st.info("No data available for this plot.")
 
-def render_defense_gdp_indexed_trend(df):
+def render_defense_gdp_indexed_trend(df, country):
     st.markdown("### 📈 Indexed Trend: Defense & GDP Over Time")
-    fig = create_defense_gdp_indexed_trend(df)
+    fig = create_defense_gdp_indexed_trend(df, country)
     if fig:
         with st.container():
             st.plotly_chart(fig, use_container_width=True)
