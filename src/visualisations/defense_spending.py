@@ -19,8 +19,6 @@ import plotly.graph_objects as go
 COMMON_LAYOUT = dict(
     autosize=True,
     height=500,
-    # dragmode removed here
-    uirevision=True,
     plot_bgcolor="#111111",
     paper_bgcolor="#111111",
     font=dict(color="white", size=12),
