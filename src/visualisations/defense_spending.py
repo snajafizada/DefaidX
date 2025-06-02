@@ -7,8 +7,8 @@ import plotly.graph_objects as go
 
 
 COMMON_LAYOUT = dict(
-    width=1000,
-    height=600,
+    width=400,
+    height=800,
     title_x=0.3,
     plot_bgcolor="#111111",
     paper_bgcolor="#111111",

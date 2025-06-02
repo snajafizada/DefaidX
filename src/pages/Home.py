@@ -35,7 +35,7 @@ def show_home():
         )
         if st.button("Go to Explore"):
             st.session_state["page"] = "Explore"
-            st.experimental_rerun()
+            st.rerun()
 
     with col2:
         st.subheader("🧠 Insights")
@@ -45,7 +45,7 @@ def show_home():
         )
         if st.button("Go to Insights"):
             st.session_state["page"] = "Insights"
-            st.experimental_rerun()
+            st.rerun()
 
     st.markdown("<hr style='border-color:#444;'>", unsafe_allow_html=True)
     st.info("🚧 More features coming soon!")
@@ -78,7 +78,7 @@ def show_home():
         log_y=True,
         size_max=55,  # smaller bubbles
         #range_y=[100, 900000],
-        title="Global Defense Spending (1990–2023)",
+        title="Global Defense Spending (1992–2023)",
         labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"}
     )
 
