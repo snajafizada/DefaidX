@@ -85,8 +85,8 @@ def show_home():
     fig.update_layout(
         height=600,  
         width=None,  
-        title_x=0.2,
-        title_y=1,
+        title_x=0.19,
+        title_y=0.93,
         title_font=dict(size=16),
         plot_bgcolor="black",
         paper_bgcolor="black",
