@@ -23,6 +23,7 @@ selected = st.sidebar.radio(
     index=sidebar_options.index(st.session_state["page"]),
 )
 
+
 if selected != st.session_state["page"]:
     st.session_state["page"] = selected
     st.rerun()

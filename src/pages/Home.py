@@ -35,7 +35,7 @@ def show_home():
         )
         if st.button("Go to Explore"):
             st.session_state["page"] = "Explore"
-            st.experimental_rerun()
+            st.rerun()
 
     with col2:
         st.subheader("🧠 Insights")
