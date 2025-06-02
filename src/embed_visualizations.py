@@ -48,10 +48,15 @@ def render_country_defense_bar_animation(df):
 
 def render_country_defense_trend(df):
     st.markdown("### 🧭 Country Comparison: Defense Spending Trends")
-    fig = create_country_defense_trend(df)
+    countries = st.multiselect("Select Countries:", sorted(df['Country'].unique()), default=["USA", "China"])
+    if not countries:
+        st.info("Please select at least one country.")
+        return
+    fig = create_country_defense_trend(df, countries)
     if fig:
         with st.container():
             st.plotly_chart(fig, use_container_width=True)
+
 
 def show_all_visualizations():
     st.title("🌍 Global Defense Spending Visualizations")

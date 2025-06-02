@@ -31,6 +31,7 @@ def show_explore():
                 df["Year"] = df["Year"].astype(str)
 
                 st.markdown("<br>", unsafe_allow_html=True)
+
                 st.markdown("### 🗺️ Choropleth Map: Global Defense Spending as % of GDP")
                 render_choropleth_map(df)
 
@@ -38,11 +39,7 @@ def show_explore():
                 render_defense_vs_gdp_scatter_excluding_usa_china(df)
 
                 st.markdown("### 📉 Indexed Trend: Defense Spending & GDP")
-
-                # Add a country selector for the user to choose the country for the indexed trend
                 country = st.selectbox("Select Country for Indexed Trend:", sorted(df['Country'].unique()))
-                
-                # Call the render function with df and selected country
                 render_defense_gdp_indexed_trend(df, country)
 
                 st.markdown("### 🏆 Animated Bar Chart: Top 20 Defense Spenders")
@@ -53,12 +50,18 @@ def show_explore():
                     "<p style='font-size:16px; color:#E0E0E0;'>Choose countries from the dropdown in the chart to explore individual defense spending trends over time.</p>",
                     unsafe_allow_html=True
                 )
-                render_country_defense_trend(df)
+                countries = st.multiselect(
+                    "Select Countries for Comparison:",
+                    options=sorted(df['Country'].unique()),
+                    default=["USA", "China"]  # or leave empty list []
+                )
+                if countries:
+                    render_country_defense_trend(df, countries)
+                else:
+                    st.info("Please select at least one country to compare.")
 
                 st.markdown("### 🕒 Time Series: Global Defense Spending Over Time")
                 render_defense_spending_over_time(df)
-
-
 
     if explore_section == "Aid":
         aid_option = st.selectbox("Choose Aid Topic", [
@@ -75,4 +78,5 @@ def show_explore():
                     "<p style='font-size:16px; color:#E0E0E0;'>Visualize the most generous donor countries and major recipient countries from 1992 to 2023.</p>",
                     unsafe_allow_html=True,
                 )
-                # render_top_donors_recipients_bar_animation(df)
+                # You can call your Aid visualizations here when ready
+                # e.g. render_top_donors_recipients_bar_animation(df)

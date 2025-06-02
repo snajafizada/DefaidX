@@ -220,9 +220,6 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
     return fig
 
 
-# ------------------------------------------------------------------ #
-# 🧭  Country-level defense trend (multiselect input removed here)
-# ------------------------------------------------------------------ #
 def create_country_defense_trend(df: pd.DataFrame, selected_countries: list[str]):
     if not selected_countries:
         return None
@@ -255,3 +252,4 @@ def create_country_defense_trend(df: pd.DataFrame, selected_countries: list[str]
         **COMMON_LAYOUT
     )
     return fig
+
