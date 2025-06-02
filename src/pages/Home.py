@@ -81,10 +81,10 @@ def show_home():
     )
     
     fig.update_layout(
-        height=500,
+        #height=500,
         paper_bgcolor="#0E1117",
         plot_bgcolor="#0E1117",
-        font_color="#E0E0E0",
+        #font_color="#E0E0E0",
         margin=dict(l=10, r=10, t=50, b=20),
         showlegend=True
 )
