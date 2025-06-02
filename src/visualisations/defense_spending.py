@@ -94,10 +94,10 @@ def create_defense_vs_gdp_scatter_excluding_usa_china(df: pd.DataFrame):
         log_x=True,
         log_y=True,
         labels={
-            "GDP": "GDP (USD, log scale)",
-            "Defense_USD": "Defense Spending (USD, log scale)"
+            "GDP": "GDP (trillions USD)",
+            "Defense_USD": "Defense Spending (millions USD)"
         },
-        title="Defense Spending vs GDP (Excluding USA & China)",
+        title="Defense Spending vs GDP (without USA & China)",
         template="plotly_dark"
     )
 
@@ -105,20 +105,30 @@ def create_defense_vs_gdp_scatter_excluding_usa_china(df: pd.DataFrame):
     fig.update_xaxes(showgrid=False, zeroline=False)
     fig.update_yaxes(showgrid=False, zeroline=False)
 
-    # Move legend above the plot, away from animation slider
+    # ✅ Proper layout update without conflict
     fig.update_layout(
         legend=dict(
             orientation="h",
-            y=1.12,                # ⬆️ moves it above the title
-            x=0.5,
+            y=1.12,
+            x=1,
             xanchor="center",
             font=dict(color="white")
         ),
         margin=dict(l=10, r=10, t=80, b=80),
+        yaxis=dict(
+            title="Defense Spending (millions USD)",
+            range=[0, 900000],
+            tickfont=dict(color="white")
+        ),
+        xaxis=dict(
+            title="GDP (trillions USD)",
+            tickfont=dict(color="white")
+        ),
         **COMMON_LAYOUT
     )
 
     return fig
+
 
 # ------------------------------------------------------------------ #
 # 📈  Indexed trend – Defense & GDP (dropdown country selector)
