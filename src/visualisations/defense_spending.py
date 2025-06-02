@@ -27,7 +27,7 @@ COMMON_LAYOUT = dict(
     legend=dict(
         font=dict(color="white", size=10),
         orientation="h",
-        x=0.5, xanchor="center",
+        x=0.3, xanchor="center",
         y=-0.25
     )
 )
@@ -71,6 +71,54 @@ def create_choropleth_map(df: pd.DataFrame):
     return fig
 
 
+def create_defense_vs_gdp_scatter_excluding_usa_china(df: pd.DataFrame):
+    # Filter out USA and China
+    df = df[(df['Country'] != 'United States') & (df['Country'] != 'China')]
+
+    # Drop rows with NaNs in columns used
+    df_clean = df.dropna(subset=['Defense_USD', 'GDP', 'Year', 'Country', 'Continent'])
+
+    if df_clean.empty:
+        return None
+
+    fig = px.scatter(
+        df_clean,
+        x='GDP',
+        y='Defense_USD',
+        animation_frame='Year',
+        animation_group='Country',
+        color='Continent',
+        hover_name='Country',
+        size='Defense_USD',
+        size_max=40,
+        log_x=True,
+        log_y=True,
+        labels={
+            "GDP": "GDP (USD, log scale)",
+            "Defense_USD": "Defense Spending (USD, log scale)"
+        },
+        title="Defense Spending vs GDP (Excluding USA & China)",
+        template="plotly_dark"
+    )
+
+    # Clean layout: remove grid lines
+    fig.update_xaxes(showgrid=False, zeroline=False)
+    fig.update_yaxes(showgrid=False, zeroline=False)
+
+    # Move legend above the plot, away from animation slider
+    fig.update_layout(
+        legend=dict(
+            orientation="h",
+            y=1.12,                # ⬆️ moves it above the title
+            x=0.5,
+            xanchor="center",
+            font=dict(color="white")
+        ),
+        margin=dict(l=10, r=10, t=80, b=80),
+        **COMMON_LAYOUT
+    )
+
+    return fig
 
 # ------------------------------------------------------------------ #
 # 📈  Indexed trend – Defense & GDP (dropdown country selector)
@@ -122,54 +170,7 @@ def create_defense_gdp_indexed_trend(df: pd.DataFrame, country: str):
     return fig
 
 
-def create_defense_vs_gdp_scatter_excluding_usa_china(df):
-    # Filter out USA and China
-    df = df[(df['Country'] != 'United States') & (df['Country'] != 'China')]
 
-    # Drop rows with NaNs in columns used
-    df_clean = df.dropna(subset=['Defense_USD', 'GDP', 'Year', 'Country'])
-
-    if df_clean.empty:
-        return None
-
-    fig = px.scatter(
-        df_clean,
-        x='GDP',
-        y='Defense_USD',
-        animation_frame='Year',
-        animation_group='Country',
-        color='Continent',
-        hover_name='Country',
-        size='Defense_USD',  
-        size_max=40,
-        log_x=True,
-        log_y=True,
-        labels={
-            "GDP": "GDP (trillions USD)",
-            "Defense_USD": "Defense Spending (millions USD)"
-        },
-        title="Defense Spending vs GDP (without USA and China)",
-    )
-
-
-    # Clean layout: remove grid lines
-    fig.update_xaxes(showgrid=False, zeroline=False)
-    fig.update_yaxes(showgrid=False, zeroline=False)
-
-    fig.update_layout(
-        legend=dict(
-            orientation="h",
-            y=1,                # ⬆️ moves it above the title
-            x=0.5,
-            xanchor="center",
-            font=dict(color="white")
-        ),
-        margin=dict(l=10, r=10, t=80, b=80),
-        **COMMON_LAYOUT)
-    return fig
-
-
-# ------------------------------------------------------------------ #
 # 🕒  Line – Defense spending over time by continent
 # ------------------------------------------------------------------ #
 def create_defense_spending_over_time(df: pd.DataFrame):
@@ -195,6 +196,7 @@ def create_defense_spending_over_time(df: pd.DataFrame):
         ),
         yaxis=dict(
             title="Defense Spending (millions USD)",
+            range=[0, 900000],  # 🧭 Set fixed y-axis range
             showgrid=False,
             zeroline=False,
             tickfont=dict(color="white")
@@ -202,6 +204,7 @@ def create_defense_spending_over_time(df: pd.DataFrame):
         **COMMON_LAYOUT
     )
     return fig
+
 
 
 # ------------------------------------------------------------------ #
@@ -230,14 +233,21 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
     )
 
     fig.update_layout(
-        dragmode="pan",
-        uirevision="country_defense_bar_animation",
-        title="🏆 Top 20 Defense Spenders by Year",
-        yaxis=dict(title="", categoryorder="total ascending"),
-        showlegend=False,
-        **COMMON_LAYOUT
-    )
-    return fig
+    xaxis=dict(
+        range=[0, 900000],
+        title="Defense Spending (millions USD)",
+        showgrid=False,
+        tickfont=dict(color="white")
+    ),
+    yaxis=dict(
+        title="",
+        tickfont=dict(color="white")
+    ),
+    bargap=0.05,  # 👈 Makes bars thicker
+    uirevision="country_defense_bar_animation",
+    showlegend=False,
+    **COMMON_LAYOUT
+)
 
 
 def create_country_defense_trend(df: pd.DataFrame, selected_countries: list[str]):
@@ -265,6 +275,7 @@ def create_country_defense_trend(df: pd.DataFrame, selected_countries: list[str]
         ),
         yaxis=dict(
             title="Defense Spending (millions USD)",
+            range=[0, 900000],  # <-- Set y-axis range here
             showgrid=False,
             zeroline=False,
             tickfont=dict(color="white")
