@@ -11,14 +11,14 @@ from visualisations.defense_spending import (
 )
 
 def render_choropleth_map(df):
-    st.markdown("### 🗺️ Choropleth Map: Defense Spending as % of GDP")
+    #st.markdown("### 🗺️ Choropleth Map: Defense Spending as % of GDP")
     fig = create_choropleth_map(df)
     if fig:
         with st.container():
             st.plotly_chart(fig, use_container_width=True)
 
 def render_defense_vs_gdp_scatter_excluding_usa_china(df):
-    st.markdown("### 📊 Scatter Plot: Defense vs GDP (Excl. USA & China)")
+    #st.markdown("### 📊 Scatter Plot: Defense vs GDP (Excl. USA & China)")
     fig = create_defense_vs_gdp_scatter_excluding_usa_china(df)
     if fig:
         with st.container():
@@ -27,7 +27,7 @@ def render_defense_vs_gdp_scatter_excluding_usa_china(df):
         st.info("No data available for this plot.")
 
 def render_defense_gdp_indexed_trend(df):
-    st.markdown("### 📈 Indexed Trend: Defense & GDP Over Time")
+    #st.markdown("### 📈 Indexed Trend: Defense & GDP Over Time")
     country = st.selectbox("Select Country for Indexed Trend:", sorted(df['Country'].unique()))
     fig = create_defense_gdp_indexed_trend(df, country)
     if fig:
@@ -35,21 +35,21 @@ def render_defense_gdp_indexed_trend(df):
             st.plotly_chart(fig, use_container_width=True)
 
 def render_defense_spending_over_time(df):
-    st.markdown("### 🕒 Continental Trends: Defense Spending Over Time")
+    #st.markdown("### 🕒 Continental Trends: Defense Spending Over Time")
     fig = create_defense_spending_over_time(df)
     if fig:
         with st.container():
             st.plotly_chart(fig, use_container_width=True)
 
 def render_country_defense_bar_animation(df):
-    st.markdown("### 🏆 Animated Bar Chart: Top 20 Defense Spenders")
+    #st.markdown("### 🏆 Animated Bar Chart: Top 20 Defense Spenders")
     fig = create_country_defense_bar_animation(df)
     if fig:
         with st.container():
             st.plotly_chart(fig, use_container_width=True)
 
 def render_country_defense_trend(df):
-    st.markdown("### 🧭 Country Comparison: Defense Spending Trends")
+    #st.markdown("### 🧭 Country Comparison: Defense Spending Trends")
     st.markdown(
          "<p style='font-size:16px; color:#E0E0E0;'>Choose countries from the dropdown to explore individual defense spending trends over time.</p>",
          unsafe_allow_html=True

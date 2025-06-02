@@ -18,10 +18,12 @@ import plotly.graph_objects as go
 COMMON_LAYOUT = dict(
     autosize=True,
     height=500,
+    title_x=0.5,
+    title_y= 0.90,
     plot_bgcolor="#111111",
     paper_bgcolor="#111111",
-    font=dict(color="white", size=12),
-    margin=dict(l=10, r=10, t=60, b=60),
+    font=dict(color="white", size=9),
+    margin=dict(l=10, r=10, t=80, b=80),
     legend=dict(
         font=dict(color="white", size=10),
         orientation="h",
