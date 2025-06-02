@@ -12,7 +12,7 @@ def show_home():
         """
         <p style='font-size:18px;color:#E0E0E0;line-height:1.7;'>
             Curious how the world’s priorities are shifting between power and progress?<br>
-            <strong>DefaidX</strong> lets you explore the evolution of global spending on arms versus aid — 
+            <strong>DefaidX</strong> lets you explore the evolution of global spending on arms versus aid —
             revealing the stories behind the numbers shaping the future of geopolitics.
         </p>
 
@@ -50,24 +50,20 @@ def show_home():
     st.markdown("<hr style='border-color:#444;'>", unsafe_allow_html=True)
     st.info("🚧 More features coming soon!")
 
-    # Load defense spending data
+    # Load data
     data_path = "data/clean/all/merged_long_1992-2023.csv"
     df = pd.read_csv(data_path)
 
-    # Filter out rows with missing Defense_USD or Year
+    # Clean data
     df = df[df["Defense_USD"].notna()]
-    df = df[df["Year"].notna()]
-
-    # Convert Year to int and sort; set ordered categorical for animation
-    df["Year"] = pd.to_numeric(df["Year"], errors="coerce").astype(int)
+    df["Year"] = pd.to_numeric(df["Year"], errors="coerce")
+    df = df.dropna(subset=["Year"])
+    df["Year"] = df["Year"].astype(int)
     df = df.sort_values(["Year", "Country"])
     years_sorted = sorted(df["Year"].unique())
     df["Year"] = pd.Categorical(df["Year"], categories=years_sorted, ordered=True)
 
-    # Defensive check: filter out rows with Defense_USD <= 0 (can't log-scale zero or negatives)
-    df = df[df["Defense_USD"] > 0]
-
-    # Create animated scatter plot
+    # Create figure
     fig = px.scatter(
         df,
         x="Defense_USD",
@@ -80,31 +76,17 @@ def show_home():
         log_x=True,
         size_max=60,
         range_x=[100, df["Defense_USD"].max()],
-        title="Global Defense Spending (1992–2023)",
+        title="Global Defense Spending (1990–2023)",
         labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"},
     )
 
     fig.update_layout(
-        autosize=True,
-        height=500,
-        showlegend=True,
-        margin=dict(l=10, r=10, t=50, b=20),
-        plot_bgcolor="#111111",
-        paper_bgcolor="#111111",
-        font=dict(color="#E0E0E0"),
-    )
-
-    # Fix axes styles
-    fig.update_xaxes(
-        gridcolor="#333333",
-        zeroline=True,
-        zerolinecolor="#444444",
-        title_font=dict(size=14, color="#AAAAAA"),
-    )
-    fig.update_yaxes(
-        gridcolor="#333333",
-        title_font=dict(size=14, color="#AAAAAA"),
-        categoryorder="category ascending",  # keeps continents ordered
-    )
+    height=500,
+    paper_bgcolor="#0E1117",
+    plot_bgcolor="#0E1117",
+    font_color="#E0E0E0",
+    margin=dict(l=10, r=10, t=50, b=20),
+    showlegend=True
+)
 
     st.plotly_chart(fig, use_container_width=True)
