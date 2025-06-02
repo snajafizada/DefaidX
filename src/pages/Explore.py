@@ -32,22 +32,11 @@ def show_explore():
 
                 st.markdown("<br>", unsafe_allow_html=True)
 
-                #st.markdown("##### 🗺️ Choropleth Map: Global Defense Spending as % of GDP")
                 render_choropleth_map(df)
-
-                #st.markdown("##### 📊 Scatter Plot: Defense vs GDP (Excluding USA & China)")
                 render_defense_vs_gdp_scatter_excluding_usa_china(df)
-
-                #st.markdown("##### 📉 Indexed Trend: Defense Spending & GDP")
                 render_defense_gdp_indexed_trend(df)
-
-                #st.markdown("##### 🏆 Animated Bar Chart: Top 20 Defense Spenders")
                 render_country_defense_bar_animation(df)
-
-                #st.markdown("##### 🧭 Country Comparison: Defense Spending Trends")
                 render_country_defense_trend(df)
-
-                #st.markdown("##### 🕒 Time Series: Global Defense Spending Over Time")
                 render_defense_spending_over_time(df)
 
     if explore_section == "Aid":
@@ -66,4 +55,3 @@ def show_explore():
                     unsafe_allow_html=True,
                 )
                 # Placeholder: Call Aid visualizations here when ready
-                # e.g. render_top_donors_recipients_bar_animation(df)
