@@ -12,7 +12,7 @@ def show_home():
         """
         <p style='font-size:18px;color:#E0E0E0;line-height:1.7;'>
             Curious how the world’s priorities are shifting between power and progress?<br>
-            <strong>DefaidX</strong> lets you explore the evolution of global spending on arms versus aid —
+            <strong>DefaidX</strong> lets you explore the evolution of global spending on arms versus aid — 
             revealing the stories behind the numbers shaping the future of geopolitics.
         </p>
 
@@ -29,23 +29,17 @@ def show_home():
 
     with col1:
         st.subheader("📊 Visualizations")
-        st.markdown(
-            "<p style='color:#DDDDDD;'>Interactive dashboards.</p>",
-            unsafe_allow_html=True,
-        )
+        st.markdown("<p style='color:#DDDDDD;'>Interactive dashboards.</p>", unsafe_allow_html=True)
         if st.button("Go to Explore"):
             st.session_state["page"] = "Explore"
-            st.rerun()
+            st.experimental_rerun()
 
     with col2:
         st.subheader("🧠 Insights")
-        st.markdown(
-            "<p style='color:#DDDDDD;'>Uncover stories behind the data.</p>",
-            unsafe_allow_html=True,
-        )
+        st.markdown("<p style='color:#DDDDDD;'>Uncover stories behind the data.</p>", unsafe_allow_html=True)
         if st.button("Go to Insights"):
             st.session_state["page"] = "Insights"
-            st.rerun()
+            st.experimental_rerun()
 
     st.markdown("<hr style='border-color:#444;'>", unsafe_allow_html=True)
     st.info("🚧 More features coming soon!")
@@ -54,15 +48,8 @@ def show_home():
     data_path = "data/clean/all/merged_long_1992-2023.csv"
     df = pd.read_csv(data_path)
 
-    # Load country codes
-    #codes_path = "data/clean/all/country_coordinates.csv"
-    #codes_df = pd.read_csv(codes_path)
-
-    #df = df.merge(codes_df[['Country', 'ISO3']], on='Country', how='left')
-
-    # Filter missing Defense_USD
+    # Filter and clean data
     df = df[df["Defense_USD"].notna()]
-    # Convert Year to int and sort, set ordered categorical 
     df["Year"] = pd.to_numeric(df["Year"], errors="coerce")
     df = df.dropna(subset=["Year"])
     df["Year"] = df["Year"].astype(int)
@@ -70,7 +57,7 @@ def show_home():
     years_sorted = sorted(df["Year"].unique())
     df["Year"] = pd.Categorical(df["Year"], categories=years_sorted, ordered=True)
 
-
+    # Create animated scatter plot
     fig = px.scatter(
         df,
         x="Defense_USD",
@@ -81,28 +68,20 @@ def show_home():
         color="Continent",
         hover_name="Country",
         log_x=True,
-        size_max=60, 
+        size_max=60,
         range_x=[100, df["Defense_USD"].max()],
         title="Global Defense Spending (1990–2023)",
-        labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"}
+        labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"},
     )
 
     fig.update_layout(
         autosize=True,
-        width=None, 
-        log_y=True, 
-        height=500, 
-        showlegend=False, 
+        height=500,
+        showlegend=False,
         margin=dict(l=10, r=10, t=50, b=20),
-        
-)
-
-        #height=550,  
-        #title_x=0.4,
-        #plot_bgcolor="black",
-        #paper_bgcolor="black",
-        #font=dict(color="white"),
-        #margin=dict(t=30, b=30, l=30, r=30),
-        #showlegend=False,
+        plot_bgcolor="#0e1117",
+        paper_bgcolor="#0e1117",
+        font=dict(color="#CCCCCC"),
+    )
 
     st.plotly_chart(fig, use_container_width=True)
