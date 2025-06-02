@@ -161,7 +161,7 @@ def create_defense_vs_gdp_scatter_excluding_usa_china(df: pd.DataFrame):
 
     fig.update_layout(
         dragmode="pan",
-        uirevision="defense_vs_gdp_scatter_excl_usa_china",
+        uirevision="defense_vs_gdp_scatter_excluding_usa_china",
         xaxis=dict(title="Defense Spending (millions USD)", tickformat=","),
         yaxis=dict(title="GDP (millions USD)", tickformat=","),
         **COMMON_LAYOUT
