@@ -83,15 +83,15 @@ def show_home():
     )
 
     fig.update_layout(
-        height=500,  # reduce height for smaller screens
-        width=None,  # allow responsive width
-        title_x=0.3,
-        title_y=0.95,
+        height=600,  
+        width=None,  
+        title_x=0.2,
+        title_y=0.85,
         title_font=dict(size=16),
         plot_bgcolor="black",
         paper_bgcolor="black",
         font=dict(color="white", size=10),  # smaller font
-        margin=dict(t=60, b=40, l=20, r=20),
+        margin=dict(t=80, b=40, l=10, r=20),
         showlegend=False,
 
         xaxis=dict(
@@ -111,13 +111,13 @@ def show_home():
             type='log',
             range=[3, 6],
             title="Defense Spending (Million USD)",
-            title_font=dict(size=12),
+            title_font=dict(size=11),
             tickfont=dict(size=9),
         ),
         updatemenus=[dict(
             type="buttons",
-            x=0.05,
-            y=-0.1,
+            x=0.1,
+            y=-0.5,
             buttons=[
                 dict(label="Play", method="animate",
                      args=[None, dict(frame=dict(duration=500, redraw=True), fromcurrent=True)]),
