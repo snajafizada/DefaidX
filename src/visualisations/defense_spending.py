@@ -23,13 +23,13 @@ COMMON_LAYOUT = dict(
     plot_bgcolor="#111111",
     paper_bgcolor="#111111",
     font=dict(color="white", size=9),
-    margin=dict(l=10, r=10, t=80, b=80),
-    legend=dict(
-        font=dict(color="white", size=10),
-        orientation="h",
-        x=0.3, xanchor="center",
-        y=-0.25
-    )
+    #margin=dict(l=10, r=10, t=80, b=80),
+    #legend=dict(
+        #font=dict(color="white", size=10),
+        #orientation="h",
+        #x=0.3, xanchor="center",
+        #y=-0.25
+    #)
 )
 
 # ------------------------------------------------------------------ #
