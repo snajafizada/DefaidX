@@ -53,6 +53,8 @@ def show_explore():
                 st.markdown("### 🕒 Time Series: Global Defense Spending Over Time")
                 render_defense_spending_over_time(df)
 
+                
+
     if explore_section == "Aid":
         aid_option = st.selectbox("Choose Aid Topic", [
             "Top Donors & Recipients"
