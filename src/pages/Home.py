@@ -2,15 +2,12 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# ──────────────────────────────────────────────────────────────────────────
-#  HERO PAGE
-# ──────────────────────────────────────────────────────────────────────────
-def show_home() -> None:
-    # -------------------  headline & intro  -------------------------------
+def show_home():
     st.markdown(
         "<h1 style='font-size:42px;color:#A970FF;font-weight:bold;'>Welcome to DefaidX</h1>",
         unsafe_allow_html=True,
     )
+
     st.markdown(
         """
         <p style='font-size:18px;color:#E0E0E0;line-height:1.7;'>
@@ -18,68 +15,115 @@ def show_home() -> None:
             <strong>DefaidX</strong> lets you explore the evolution of global spending on arms versus aid —
             revealing the stories behind the numbers shaping the future of geopolitics.
         </p>
+
         <p style='font-size:15px;color:#BBBBBB;line-height:1.5;'>
             🔍 Use the sidebar to explore our interactive visuals and insights.
         </p>
         """,
         unsafe_allow_html=True,
     )
+
     st.markdown("<hr style='border-color:#444;'>", unsafe_allow_html=True)
 
-    # -------------------  hero visualisation  -----------------------------
-    show_defense_trend_by_continent()
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("📊 Visualizations")
+        st.markdown(
+            "<p style='color:#DDDDDD;'>Interactive dashboards.</p>",
+            unsafe_allow_html=True,
+        )
+        if st.button("Go to Explore"):
+            st.session_state["page"] = "Explore"
+            st.experimental_rerun()
+
+    with col2:
+        st.subheader("🧠 Insights")
+        st.markdown(
+            "<p style='color:#DDDDDD;'>Uncover stories behind the data.</p>",
+            unsafe_allow_html=True,
+        )
+        if st.button("Go to Insights"):
+            st.session_state["page"] = "Insights"
+            st.experimental_rerun()
 
     st.markdown("<hr style='border-color:#444;'>", unsafe_allow_html=True)
     st.info("🚧 More features coming soon!")
 
-
-# ──────────────────────────────────────────────────────────────────────────
-#  DEFENSE TREND CHART
-# ──────────────────────────────────────────────────────────────────────────
-def show_defense_trend_by_continent() -> None:
-    st.markdown("### 🛡️ Defense Spending by Continent (1992 – 2023)")
-
-    # 1 · load --------------------------------------------------------------
+    # Load defense spending data
     data_path = "data/clean/all/merged_long_1992-2023.csv"
     df = pd.read_csv(data_path)
 
-    # 2 · clean -------------------------------------------------------------
-    df = df[df["Defense_USD"].notna() & (df["Defense_USD"] > 0)]
-    df["Year"] = pd.to_numeric(df["Year"], errors="coerce").astype("Int64")
-    df = df.dropna(subset=["Year", "Continent"])
+    # Load country codes
+    codes_path = "data/clean/all/country_coordinates.csv"
+    codes_df = pd.read_csv(codes_path)
+
+    df = df.merge(codes_df[['Country', 'ISO3']], on='Country', how='left')
+
+    # Filter missing Defense_USD
+    df = df[df["Defense_USD"].notna()]
+
+    # Convert Year to int and sort, set ordered categorical for animation
+    df["Year"] = pd.to_numeric(df["Year"], errors="coerce")
+    df = df.dropna(subset=["Year"])
     df["Year"] = df["Year"].astype(int)
+    df = df.sort_values(["Year", "Country"])
+    years_sorted = sorted(df["Year"].unique())
+    df["Year"] = pd.Categorical(df["Year"], categories=years_sorted, ordered=True)
 
-    # 3 · aggregate ---------------------------------------------------------
-    trend = (
-        df.groupby(["Year", "Continent"], as_index=False)["Defense_USD"]
-        .sum()
-        .rename(columns={"Defense_USD": "Defense (M USD)"})
-    )
-
-    # 4 · plot --------------------------------------------------------------
-    fig = px.line(
-        trend,
-        x="Year",
-        y="Defense (M USD)",
+    fig = px.scatter(
+        df,
+        x="Defense_USD",
+        y="Continent",
+        animation_frame="Year",
+        animation_group="Country",
+        size="Defense_USD",
         color="Continent",
-        markers=True,
-        template="plotly_dark",
+        hover_name="Country",
+        log_x=True,
+        size_max=30,
+        range_x=[100, df["Defense_USD"].max()],
+        title="Global Defense Spending (1990–2023)",
+        labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"}
     )
 
-    # 5 · layout (only 100 % safe keys) ------------------------------------
     fig.update_layout(
-        height=560,
-        margin=dict(l=20, r=20, t=50, b=40),
-        title={
-            "text": "Defense Spending by Continent, 1992-2023",
-            "x": 0.5,
-            "xanchor": "center",
-            "font": {"size": 20},
-        },
-        legend=dict(title="", font=dict(size=11)),
-        font=dict(color="#E0E0E0"),
-        plot_bgcolor="#111111",
-        paper_bgcolor="#111111",
+        height=550,
+        title_x=0.5,
+        title_y=0.95,  # lifts title upward inside margin
+        plot_bgcolor="black",
+        paper_bgcolor="black",
+        font=dict(color="white"),
+        margin=dict(t=80, b=70, l=50, r=30),  # more top margin for spacing
+        showlegend=False,
+        xaxis=dict(
+            tickangle=-90,   # vertical country names
+            showgrid=False,  # no vertical grid lines
+            zeroline=False,
+        ),
+        yaxis=dict(
+            showgrid=True,    # horizontal grid lines visible
+            gridcolor='gray',
+            zeroline=False,
+            type='category'  # keep continent as categorical axis
+        ),
+        updatemenus=[dict(
+            type="buttons",
+            x=0.05,
+            y=-0.1,
+            buttons=[
+                dict(label="Play", method="animate",
+                     args=[None, dict(frame=dict(duration=500, redraw=True), fromcurrent=True)]),
+                dict(label="Pause", method="animate",
+                     args=[[None], dict(frame=dict(duration=0, redraw=False), mode="immediate",
+                                        transition=dict(duration=0))])
+            ]
+        )]
+    )
+
+    fig.update_traces(
+        marker=dict(line=dict(width=1, color="gray")),
+        textfont=dict(color='white')  # visible on dark bg
     )
 
     st.plotly_chart(fig, use_container_width=True)
