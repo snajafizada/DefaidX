@@ -12,7 +12,7 @@ def show_home():
         """
         <p style='font-size:18px;color:#E0E0E0;line-height:1.7;'>
             Curious how the world’s priorities are shifting between power and progress?<br>
-            <strong>DefaidX</strong> lets you explore the evolution of global spending on arms versus aid — 
+            <strong>DefaidX</strong> lets you explore the evolution of global spending on arms versus aid —
             revealing the stories behind the numbers shaping the future of geopolitics.
         </p>
 
@@ -29,20 +29,14 @@ def show_home():
 
     with col1:
         st.subheader("📊 Visualizations")
-        st.markdown(
-            "<p style='color:#DDDDDD;'>Interactive dashboards.</p>",
-            unsafe_allow_html=True,
-        )
+        st.markdown("<p style='color:#DDDDDD;'>Interactive dashboards.</p>", unsafe_allow_html=True)
         if st.button("Go to Explore"):
             st.session_state["page"] = "Explore"
             st.experimental_rerun()
 
     with col2:
         st.subheader("🧠 Insights")
-        st.markdown(
-            "<p style='color:#DDDDDD;'>Uncover stories behind the data.</p>",
-            unsafe_allow_html=True,
-        )
+        st.markdown("<p style='color:#DDDDDD;'>Uncover stories behind the data.</p>", unsafe_allow_html=True)
         if st.button("Go to Insights"):
             st.session_state["page"] = "Insights"
             st.experimental_rerun()
@@ -50,53 +44,48 @@ def show_home():
     st.markdown("<hr style='border-color:#444;'>", unsafe_allow_html=True)
     st.info("🚧 More features coming soon!")
 
-    # Load defense spending data
+    # Load data
     data_path = "data/clean/all/merged_long_1992-2023.csv"
     df = pd.read_csv(data_path)
 
-    # Filter missing Defense_USD
-    df = df[df["Defense_USD"].notna()]
-    # Convert Year to int and sort, set ordered categorical 
+    # Filter and clean data for Defense_USD > 0 (required for log scale)
+    df = df[df["Defense_USD"].notna() & (df["Defense_USD"] > 0)]
     df["Year"] = pd.to_numeric(df["Year"], errors="coerce")
     df = df.dropna(subset=["Year"])
     df["Year"] = df["Year"].astype(int)
     df = df.sort_values(["Year", "Country"])
+
+    # Order years for animation
     years_sorted = sorted(df["Year"].unique())
     df["Year"] = pd.Categorical(df["Year"], categories=years_sorted, ordered=True)
 
+    # Create a vertical scatter animation: Y = Defense_USD, X = Continent (categorical)
     fig = px.scatter(
-    df,
-    x="Continent",         # Categories on x-axis now
-    y="Defense_USD",       # Spending on y-axis (vertical)
-    animation_frame="Year",
-    animation_group="Country",
-    size="Defense_USD",
-    color="Continent",
-    hover_name="Country",
-    log_y=True,            # Log scale on y-axis instead of x-axis
-    size_max=60,
-    range_y=[100, df["Defense_USD"].max()],
-    title="Global Defense Spending (1990–2023)",
-    labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"},
-)
-    
+        df,
+        y="Defense_USD",
+        x="Continent",
+        animation_frame="Year",
+        animation_group="Country",
+        size="Defense_USD",
+        color="Continent",
+        hover_name="Country",
+        log_y=True,
+        size_max=60,
+        range_y=[100, df["Defense_USD"].max()],
+        title="Global Defense Spending (1990–2023)",
+        labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"},
+    )
+
     fig.update_layout(
-    height=500,
-    margin=dict(l=10, r=10, t=50, b=20),
-    showlegend=False,
-    title=dict(font=dict(size=18), x=0.5, xanchor="center"),
-    xaxis=dict(
-        tickfont=dict(size=11),
-        titlefont=dict(size=13),
-        title="Defense Spending (Million USD, log scale)"
-    ),
-    yaxis=dict(
-        tickfont=dict(size=11),
-        titlefont=dict(size=13),
-        title="Region (Continent)"
-    ),
-    plot_bgcolor="#0E1117",
-    paper_bgcolor="#0E1117",
-    font=dict(color="#E0E0E0"),
-)
+        height=600,
+        margin=dict(l=20, r=20, t=60, b=40),
+        showlegend=False,
+        title=dict(font=dict(size=20), x=0.5, xanchor="center"),
+        xaxis=dict(tickfont=dict(size=14), titlefont=dict(size=16)),
+        yaxis=dict(tickfont=dict(size=14), titlefont=dict(size=16)),
+        plot_bgcolor="#0E1117",
+        paper_bgcolor="#0E1117",
+        font=dict(color="#E0E0E0"),
+    )
+
     st.plotly_chart(fig, use_container_width=True)
