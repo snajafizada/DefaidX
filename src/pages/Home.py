@@ -55,11 +55,14 @@ def show_home():
     df = pd.read_csv(data_path)
 
     # Load country codes
-    codes_path = "data/clean/all/country_coordinates.csv"
-    codes_df = pd.read_csv(codes_path)
+    #codes_path = "data/clean/all/country_coordinates.csv"
+    #codes_df = pd.read_csv(codes_path)
 
-    df = df.merge(codes_df[['Country', 'ISO3']], on='Country', how='left')
+    #df = df.merge(codes_df[['Country', 'ISO3']], on='Country', how='left')
+
+    # Filter missing Defense_USD
     df = df[df["Defense_USD"].notna()]
+    # Convert Year to int and sort, set ordered categorical 
     df["Year"] = pd.to_numeric(df["Year"], errors="coerce")
     df = df.dropna(subset=["Year"])
     df["Year"] = df["Year"].astype(int)
@@ -67,60 +70,38 @@ def show_home():
     years_sorted = sorted(df["Year"].unique())
     df["Year"] = pd.Categorical(df["Year"], categories=years_sorted, ordered=True)
 
+
     fig = px.scatter(
         df,
-        x="Continent",
-        y="Defense_USD",
+        x="Defense_USD",
+        y="Continent",
         animation_frame="Year",
         animation_group="Country",
         size="Defense_USD",
         color="Continent",
         hover_name="Country",
-        log_y=True,
-        size_max=60,
-        range_y=[100, df["Defense_USD"].max()],
+        log_x=True,
+        size_max=60, 
+        range_x=[100, df["Defense_USD"].max()],
         title="Global Defense Spending (1990–2023)",
         labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"}
     )
 
     fig.update_layout(
-        height=600,
-        title_x=0.0,  # More to the left
-        title_font=dict(size=20),
-        plot_bgcolor="black",
-        paper_bgcolor="black",
-        font=dict(color="white"),
-        margin=dict(t=60, b=60, l=50, r=30),
-        xaxis=dict(
-            tickangle=-90,
-            showgrid=False,
-            zeroline=False
-        ),
-        yaxis=dict(
-            showgrid=True,
-            gridcolor='gray',
-            zeroline=False,
-            type='log',
-            range=[2, None]
-        ),
-        showlegend=False,
-        updatemenus=[dict(
-            type="buttons",
-            x=0.05,
-            y=-0.1,
-            buttons=[
-                dict(label="Play", method="animate",
-                     args=[None, dict(frame=dict(duration=500, redraw=True), fromcurrent=True)]),
-                dict(label="Pause", method="animate",
-                     args=[[None], dict(frame=dict(duration=0, redraw=False), mode="immediate",
-                                        transition=dict(duration=0))])
-            ]
-        )]
-    )
+        autosize=True,
+        width=None,  
+        height=500, 
+        showlegend=False, 
+        margin=dict(l=10, r=10, t=50, b=20),
+        
+)
 
-    fig.update_traces(
-        marker=dict(line=dict(width=1, color="gray")),
-        textfont=dict(color='white')
-    )
+        #height=550,  
+        #title_x=0.4,
+        #plot_bgcolor="black",
+        #paper_bgcolor="black",
+        #font=dict(color="white"),
+        #margin=dict(t=30, b=30, l=30, r=30),
+        #showlegend=False,
 
     st.plotly_chart(fig, use_container_width=True)
