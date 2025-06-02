@@ -71,58 +71,69 @@ def show_home():
     years_sorted = sorted(df["Year"].unique())
     df["Year"] = pd.Categorical(df["Year"], categories=years_sorted, ordered=True)
 
+    # Create the figure
     fig = px.scatter(
         df,
-        x="Defense_USD",
-        y="Continent",
+        x="Continent",
+        y="Defense_USD",
         animation_frame="Year",
         animation_group="Country",
         size="Defense_USD",
         color="Continent",
         hover_name="Country",
-        
+        log_y=True,
         size_max=30,
-        range_x=[100, df["Defense_USD"].max()],
+        range_y=[100, 900000],
         title="Global Defense Spending (1990–2023)",
         labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"}
     )
 
+    # Update layout for vertical, narrow figure with tight continent spacing
     fig.update_layout(
-    height=550,
-    title_x=0.5,
-    title_y=0.95,
-    plot_bgcolor="#000000",
-    paper_bgcolor="#000000",
-    font=dict(color="#FFFFFF"),
-    margin=dict(t=80, b=70, l=50, r=30),
-    showlegend=False,
-    xaxis=dict(
-        tickangle=-90,
-        showgrid=False,
-        zeroline=False,
-    ),
-    yaxis=dict(
-        showgrid=True,
-        gridcolor='gray',
-        zeroline=False,
-        type='category',
-    ),
-    # Temporarily comment out animation buttons for compatibility:
-    # updatemenus=[dict(
-    #     type="buttons",
-    #     x=0.05,
-    #     y=-0.1,
-    #     buttons=[
-    #         dict(label="Play", method="animate",
-    #              args=[None, dict(frame=dict(duration=500, redraw=True), fromcurrent=True)]),
-    #         dict(label="Pause", method="animate",
-    #              args=[[None], dict(frame=dict(duration=0, redraw=False), mode="immediate",
-    #                                 transition=dict(duration=0))])
-    #     ]
-    # )]
-)
+        height=900,  # tall figure
+        width=400,   # narrow width
+        title_x=0.5,
+        title_y=0.95,
+        plot_bgcolor="black",
+        paper_bgcolor="black",
+        font=dict(color="white"),
+        margin=dict(t=80, b=70, l=60, r=40),
+        showlegend=False,
+        xaxis=dict(
+            type='category',
+            categoryorder='array',
+            categoryarray=["Africa", "Asia", "Europe", "North America", "Oceania", "South America"],
+            tickangle=-45,
+            showgrid=True,
+            zeroline=True,
+            range=[-0.5, 5.5],  # tighten categorical axis around continents
+            automargin=True,
+        ),
+        yaxis=dict(
+            showgrid=False,
+            gridcolor='gray',
+            zeroline=False,
+            type='log',
+            range=[2, 5.95],  # corresponds to 100 to ~900,000 in log scale
+            title="Defense Spending (Million USD)"
+        ),
+        updatemenus=[dict(
+            type="buttons",
+            x=0.05,
+            y=-0.1,
+            buttons=[
+                dict(label="Play", method="animate",
+                     args=[None, dict(frame=dict(duration=500, redraw=True), fromcurrent=True)]),
+                dict(label="Pause", method="animate",
+                     args=[[None], dict(frame=dict(duration=0, redraw=False), mode="immediate",
+                                        transition=dict(duration=0))])
+            ]
+        )]
+    )
+
     fig.update_traces(
-    marker=dict(line=dict(width=1, color="gray")),
-    textfont=dict(color='#FFFFFF')
-)
+        marker=dict(line=dict(width=1, color="gray")),
+        textfont=dict(color='white')
+    )
+
     st.plotly_chart(fig, use_container_width=True)
