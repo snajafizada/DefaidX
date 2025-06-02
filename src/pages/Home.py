@@ -80,7 +80,7 @@ def show_home():
         size="Defense_USD",
         color="Continent",
         hover_name="Country",
-        log_x=True,
+        
         size_max=30,
         range_x=[100, df["Defense_USD"].max()],
         title="Global Defense Spending (1990–2023)",
@@ -88,42 +88,41 @@ def show_home():
     )
 
     fig.update_layout(
-        height=550,
-        title_x=0.5,
-        title_y=0.95,  # lifts title upward inside margin
-        plot_bgcolor="black",
-        paper_bgcolor="black",
-        font=dict(color="white"),
-        margin=dict(t=80, b=70, l=50, r=30),  # more top margin for spacing
-        showlegend=False,
-        xaxis=dict(
-            tickangle=-90,   # vertical country names
-            showgrid=False,  # no vertical grid lines
-            zeroline=False,
-        ),
-        yaxis=dict(
-            showgrid=True,    # horizontal grid lines visible
-            gridcolor='gray',
-            zeroline=False,
-            type='category'  # keep continent as categorical axis
-        ),
-        updatemenus=[dict(
-            type="buttons",
-            x=0.05,
-            y=-0.1,
-            buttons=[
-                dict(label="Play", method="animate",
-                     args=[None, dict(frame=dict(duration=500, redraw=True), fromcurrent=True)]),
-                dict(label="Pause", method="animate",
-                     args=[[None], dict(frame=dict(duration=0, redraw=False), mode="immediate",
-                                        transition=dict(duration=0))])
-            ]
-        )]
-    )
-
+    height=550,
+    title_x=0.5,
+    title_y=0.95,
+    plot_bgcolor="#000000",
+    paper_bgcolor="#000000",
+    font=dict(color="#FFFFFF"),
+    margin=dict(t=80, b=70, l=50, r=30),
+    showlegend=False,
+    xaxis=dict(
+        tickangle=-90,
+        showgrid=False,
+        zeroline=False,
+    ),
+    yaxis=dict(
+        showgrid=True,
+        gridcolor='gray',
+        zeroline=False,
+        type='category',
+    ),
+    # Temporarily comment out animation buttons for compatibility:
+    # updatemenus=[dict(
+    #     type="buttons",
+    #     x=0.05,
+    #     y=-0.1,
+    #     buttons=[
+    #         dict(label="Play", method="animate",
+    #              args=[None, dict(frame=dict(duration=500, redraw=True), fromcurrent=True)]),
+    #         dict(label="Pause", method="animate",
+    #              args=[[None], dict(frame=dict(duration=0, redraw=False), mode="immediate",
+    #                                 transition=dict(duration=0))])
+    #     ]
+    # )]
+)
     fig.update_traces(
-        marker=dict(line=dict(width=1, color="gray")),
-        textfont=dict(color='white')  # visible on dark bg
-    )
-
+    marker=dict(line=dict(width=1, color="gray")),
+    textfont=dict(color='#FFFFFF')
+)
     st.plotly_chart(fig, use_container_width=True)

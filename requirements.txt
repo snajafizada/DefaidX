@@ -3,3 +3,5 @@ pandas
 plotly
 requests
 numpy
+plotly==5.20.0
+
