@@ -3,7 +3,7 @@ import sys
 import os
 
 # ── MUST be first Streamlit command ───────────────────────────────────────
-st.set_page_config(page_title="Defaidtics", layout="wide")
+st.set_page_config(page_title="DefaidX", layout="wide")
 
 
 # ── Make src/ importable ──────────────────────────────────────────────────
