@@ -79,14 +79,13 @@ def show_home():
         title="Global Defense Spending (1990–2023)",
         labels={"Defense_USD": "Defense Spending (Million USD)", "Continent": "Region"},
     )
-
+    
     fig.update_layout(
-    height=500,
-    paper_bgcolor="#0E1117",
-    plot_bgcolor="#0E1117",
-    font_color="#E0E0E0",
-    margin=dict(l=10, r=10, t=50, b=20),
-    showlegend=True
+        height=500,
+        paper_bgcolor="#0E1117",
+        plot_bgcolor="#0E1117",
+        font_color="#E0E0E0",
+        margin=dict(l=10, r=10, t=50, b=20),
+        showlegend=True
 )
-
     st.plotly_chart(fig, use_container_width=True)
