@@ -20,7 +20,7 @@ COMMON_LAYOUT = dict(
     autosize=True,
     height=500,
     title_x=0.3,
-    title_y= 0.90,
+    title_y= 1,
     plot_bgcolor="#111111",
     paper_bgcolor="#111111",
     font=dict(color="white", size=9),
