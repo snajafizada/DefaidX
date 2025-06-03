@@ -27,11 +27,9 @@ COMMON_LAYOUT = dict(
     margin=dict(l=10, r=10, t=80, b=80),
      legend=dict(
         orientation="h",            # horizontal legend
-        yanchor="bottom",
-        y=1.05,                     # move legend *above* plot area
+        y=1.15,                     # move legend *above* plot area
         xanchor="center",
         x=0.5,
-                         # remove legend title if any
     )
 )
 
