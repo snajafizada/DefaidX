@@ -158,10 +158,23 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
     df_ranked["Rank"] = df_ranked.groupby("Year")["Defense_USD"].rank(ascending=False, method="first")
 
     # Keep only Top 20 per year
-    df_top20 = df_ranked[df_ranked["Rank"] <= 20]
+    df_top20 = df_ranked[df_ranked["Rank"] <= 20].copy()
 
-    # Ensure Country is string type
-    df_top20["Country"] = df_top20["Country"].astype(str)
+    # For each year, sort countries by spending and set correct category order
+    category_order = {}
+    for year in df_top20["Year"].unique():
+        top_countries = (
+            df_top20[df_top20["Year"] == year]
+            .sort_values("Defense_USD", ascending=True)["Country"]
+            .tolist()
+        )
+        category_order[year] = top_countries
+
+    # Sort countries per year, and assign ordered categorical type
+    df_top20["Country"] = df_top20.apply(
+        lambda row: pd.Categorical(row["Country"], categories=category_order[row["Year"]], ordered=True),
+        axis=1
+    )
 
     fig = px.bar(
         df_top20,
@@ -173,16 +186,15 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
         color="Country",
         title="🏆 Top 20 Defense Spenders Over Time",
         labels={"Defense_USD": "Defense Spending (USD)"},
-        template="plotly_dark",
-        category_orders={"Country": df_top20["Country"].unique()}
+        template="plotly_dark"
     )
 
-    # Make bars thicker
-    fig.update_traces(marker_line_width=1, width=0.5)
+    # Bar thickness and clarity
+    fig.update_traces(marker_line_width=0.5, width=0.5)
 
-    # Layout
     fig.update_layout(
         **COMMON_LAYOUT,
+        height=850,
         xaxis=dict(
             title="Defense Spending (USD)",
             showgrid=False,
@@ -191,13 +203,14 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
         yaxis=dict(
             title="",
             tickfont=dict(color="white"),
-            categoryorder="total ascending"  # Highest spender at top
+            automargin=True
         ),
         uirevision="country_defense_bar_animation",
         showlegend=False
     )
 
     return fig
+
 
 #5--------------------------------------------------------------------
 # ------------------------------------------------------------------ #
