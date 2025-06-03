@@ -18,7 +18,7 @@ import plotly.graph_objects as go
 # ------------------------------------------------------------------ #
 COMMON_LAYOUT = dict(
     autosize=True,
-    height=500,
+    height=600,
     title_x=0.3,
     title_y= 1,
     plot_bgcolor="#111111",
@@ -159,6 +159,8 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
 
     # Keep only Top 20 per year
     df_top20 = df_ranked[df_ranked["Rank"] <= 20]
+
+    # Ensure Country is string type
     df_top20["Country"] = df_top20["Country"].astype(str)
 
     fig = px.bar(
@@ -175,13 +177,12 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
         category_orders={"Country": df_top20["Country"].unique()}
     )
 
-    # Thicker bars, but not overlapping
-    fig.update_traces(marker_line_width=0, width=0.6)
+    # Make bars thicker
+    fig.update_traces(marker_line_width=0, width=0.7)
 
-    # Layout adjustments
+    # Layout
     fig.update_layout(
         **COMMON_LAYOUT,
-        height=850,  # 👈 Give enough space for all bars
         xaxis=dict(
             title="Defense Spending (USD)",
             showgrid=False,
@@ -190,17 +191,14 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
         yaxis=dict(
             title="",
             tickfont=dict(color="white"),
-            categoryorder="total ascending"
+            categoryorder="total ascending"  # Highest spender at top
         ),
+        #bargap=0.01,
         uirevision="country_defense_bar_animation",
         showlegend=False
     )
 
-    # Prevent label clipping
-    fig.update_yaxes(automargin=True)
-
     return fig
-
 
 #5--------------------------------------------------------------------
 # ------------------------------------------------------------------ #
