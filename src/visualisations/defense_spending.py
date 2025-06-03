@@ -178,7 +178,7 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
     )
 
     # Make bars thicker
-    fig.update_traces(marker_line_width=0, width=0.7)
+    fig.update_traces(marker_line_width=0, width=0.5)
 
     # Layout
     fig.update_layout(
@@ -193,7 +193,7 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
             tickfont=dict(color="white"),
             categoryorder="total ascending"  # Highest spender at top
         ),
-        #bargap=0.01,
+        bargap=0.3,
         uirevision="country_defense_bar_animation",
         showlegend=False
     )
