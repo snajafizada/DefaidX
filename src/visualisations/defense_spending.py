@@ -149,49 +149,47 @@ def create_defense_spending_over_time(df: pd.DataFrame):
     )
     return fig
 
-
-#4 ------------------------------------------------------------------ #
-#🏆  Animated bar race – Top 20 spenders
-# ------------------------------------------------------------------ #
 def create_country_defense_bar_animation(df: pd.DataFrame):
+    # Aggregate and rank
     df_ranked = (
         df.groupby(["Year", "Country"], as_index=False)["Defense_USD"].sum()
         .sort_values(["Year", "Defense_USD"], ascending=[True, False])
     )
     df_ranked["Rank"] = df_ranked.groupby("Year")["Defense_USD"].rank(ascending=False, method="first")
+
+    # Keep only Top 20 per year
+    df_top20 = df_ranked[df_ranked["Rank"] <= 20]
+
+    # Create animated bar chart
     fig = px.bar(
-        df,
+        df_top20,
         x="Defense_USD",
         y="Country",
         orientation="h",
         animation_frame="Year",
+        animation_group="Country",
         color="Country",
         title="🏆 Top 20 Defense Spenders Over Time",
-        labels={"Defense_USD": "Defense Spending (millions USD)"},
+        labels={"Defense_USD": "Defense Spending (USD)"},
         template="plotly_dark"
     )
 
-    fig.update_layout(**COMMON_LAYOUT)
-    xaxis=dict(
-        range=[0, 900000],
-        title="Defense Spending (millions USD)",
-        showgrid=False,
-        tickfont=dict(color="white")
-    ),
-    yaxis=dict(
-        title="",
-        tickfont=dict(color="white")
-    ),
-    bargap=0.5,   
-    uirevision="country_defense_bar_animation",
-    showlegend=False,
-    legend=dict(
-        orientation="h",            # horizontal legend
-        yanchor="bottom",
-        y=1.05,                     # move legend *above* plot area
-        xanchor="center",
-        x=0.5,           # remove legend title if any
-)
+    # Update layout
+    fig.update_layout(
+        **COMMON_LAYOUT,
+        xaxis=dict(
+            title="Defense Spending (USD)",
+            showgrid=False,
+            tickfont=dict(color="white")
+        ),
+        yaxis=dict(
+            title="",
+            tickfont=dict(color="white")
+        ),
+        bargap=0.05,
+        uirevision="country_defense_bar_animation",
+        showlegend=False
+    )
 
     return fig
 
