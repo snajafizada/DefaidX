@@ -160,7 +160,9 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
     # Keep only Top 20 per year
     df_top20 = df_ranked[df_ranked["Rank"] <= 20]
 
-    # Create animated bar chart
+    # Ensure Country is string type
+    df_top20["Country"] = df_top20["Country"].astype(str)
+
     fig = px.bar(
         df_top20,
         x="Defense_USD",
@@ -171,10 +173,14 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
         color="Country",
         title="🏆 Top 20 Defense Spenders Over Time",
         labels={"Defense_USD": "Defense Spending (USD)"},
-        template="plotly_dark"
+        template="plotly_dark",
+        category_orders={"Country": df_top20["Country"].unique()}
     )
 
-    # Update layout
+    # Make bars thicker
+    fig.update_traces(marker_line_width=0, width=0.9)
+
+    # Layout
     fig.update_layout(
         **COMMON_LAYOUT,
         xaxis=dict(
@@ -184,9 +190,10 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
         ),
         yaxis=dict(
             title="",
-            tickfont=dict(color="white")
+            tickfont=dict(color="white"),
+            categoryorder="total ascending"  # Highest spender at top
         ),
-        bargap=0.05,
+        bargap=0.02,
         uirevision="country_defense_bar_animation",
         showlegend=False
     )
