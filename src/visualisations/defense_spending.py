@@ -98,10 +98,10 @@ def create_defense_vs_gdp_scatter_excluding_usa_china(df: pd.DataFrame):
         log_x=True,
         log_y=True,
         labels={
-            "GDP": "GDP (USD, log scale)",
-            "Defense_USD": "Defense Spending (USD, log scale)"
+            "GDP": "GDP (USD)",
+            "Defense_USD": "Defense Spending (USD)"
         },
-        title="Defense Spending vs GDP (Excluding USA & China)",
+        title="Defense Spending vs GDP (Without USA & China)",
         template="plotly_dark"
     )
 
@@ -193,7 +193,7 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
             tickfont=dict(color="white"),
             categoryorder="total ascending"  # Highest spender at top
         ),
-        bargap=0.02,
+        bargap=0.01,
         uirevision="country_defense_bar_animation",
         showlegend=False
     )
