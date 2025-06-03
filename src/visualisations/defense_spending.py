@@ -173,7 +173,7 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
         template="plotly_dark"
     )
 
-    fig.update_layout(
+    fig.update_layout(**COMMON_LAYOUT)
     xaxis=dict(
         range=[0, 900000],
         title="Defense Spending (millions USD)",
@@ -187,7 +187,12 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
     bargap=0.5,   
     uirevision="country_defense_bar_animation",
     showlegend=False,
-    **COMMON_LAYOUT
+    legend=dict(
+        orientation="h",            # horizontal legend
+        yanchor="bottom",
+        y=1.05,                     # move legend *above* plot area
+        xanchor="center",
+        x=0.5,           # remove legend title if any
 )
 
     return fig
