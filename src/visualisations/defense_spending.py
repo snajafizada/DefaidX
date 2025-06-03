@@ -25,11 +25,13 @@ COMMON_LAYOUT = dict(
     paper_bgcolor="#111111",
     font=dict(color="white", size=9),
     margin=dict(l=10, r=10, t=80, b=80),
-    legend=dict(
-        font=dict(color="white", size=10),
-        orientation="h",
-        x=0.5, xanchor="center",
-        y=-0.25
+     legend=dict(
+        orientation="h",            # horizontal legend
+        yanchor="bottom",
+        y=1.05,                     # move legend *above* plot area
+        xanchor="center",
+        x=0.5,
+                         # remove legend title if any
     )
 )
 
@@ -122,7 +124,6 @@ def create_defense_vs_gdp_scatter_excluding_usa_china(df: pd.DataFrame):
 def create_defense_spending_over_time(df: pd.DataFrame):
     df_time = df.groupby(["Year", "Continent"], as_index=False)["Defense_USD"].sum()
     df_time["Year"] = df_time["Year"].astype(int)
-
     fig = px.line(
         df_time,
         x="Year", y="Defense_USD", color="Continent",
@@ -160,10 +161,8 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
         .sort_values(["Year", "Defense_USD"], ascending=[True, False])
     )
     df_ranked["Rank"] = df_ranked.groupby("Year")["Defense_USD"].rank(ascending=False, method="first")
-    df_top20 = df_ranked[df_ranked["Rank"] <= 20]
-
     fig = px.bar(
-        df_top20,
+        df,
         x="Defense_USD",
         y="Country",
         orientation="h",
@@ -185,7 +184,7 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
         title="",
         tickfont=dict(color="white")
     ),
-    bargap=0.05,  
+    bargap=0.5,   
     uirevision="country_defense_bar_animation",
     showlegend=False,
     **COMMON_LAYOUT
@@ -243,50 +242,7 @@ def create_defense_gdp_indexed_trend(df: pd.DataFrame, country: str):
     )
     return fig
 
-#6-----------------------------------------------------------------------
-# ------------------------------------------------------------------ #
-# 🏆  Animated bar race – Top 20 spenders
-# ------------------------------------------------------------------ #
-#def create_country_defense_bar_animation(df: pd.DataFrame):
-    #df = df.copy()
-    #df["Year"] = df["Year"].astype(str)
-
-    # For each year, top 20 countries by Defense_USD
-    #top20 = (
-     #   df.groupby("Year", group_keys=False)
-      #    .apply(lambda d: d.nlargest(20, "Defense_USD"))
-    #)
-    #top20["Rank"] = top20.groupby("Year")["Defense_USD"].rank("first", ascending=False)
-    #top20.sort_values(["Year", "Rank"], inplace=True)
-
-    #max_defense = top20["Defense_USD"].max() * 1.1
-
-    #fig = px.bar(
-     #   top20, x="Defense_USD", y="Country", orientation="h",
-      #  animation_frame="Year", color="Country",
-       # range_x=[0, max_defense],
-        #template="plotly_dark",
-        #labels={"Defense_USD": "Defense Spending (millions USD)"}
-    #)
-
-    #fig.update_layout(
-    #xaxis=dict(
-     #   range=[0, 900000],
-      #  title="Defense Spending (millions USD)",
-       # showgrid=False,
-        #tickfont=dict(color="white")
-    #),
-    #yaxis=dict(
-     #   title="",
-      #  tickfont=dict(color="white")
-    #),
-    #bargap=0.05,  # 👈 Makes bars thicker
-    #uirevision="country_defense_bar_animation",
-    #showlegend=False,
-    #**COMMON_LAYOUT
-#)
-
-#7--------------------------------------------------------------------------------
+#6--------------------------------------------------------------------------------
 def create_country_defense_trend(df: pd.DataFrame, selected_countries: list[str]):
     if not selected_countries:
         return None
