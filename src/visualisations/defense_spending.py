@@ -160,7 +160,7 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
     # Keep only Top 20 per year
     df_top20 = df_ranked[df_ranked["Rank"] <= 20].copy()
 
-    # For each year, sort countries by spending and set correct category order
+    # Dynamic country ordering per year to prevent overlap
     category_order = {}
     for year in df_top20["Year"].unique():
         top_countries = (
@@ -170,12 +170,13 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
         )
         category_order[year] = top_countries
 
-    # Sort countries per year, and assign ordered categorical type
+    # Assign ordered categorical type based on year-specific order
     df_top20["Country"] = df_top20.apply(
         lambda row: pd.Categorical(row["Country"], categories=category_order[row["Year"]], ordered=True),
         axis=1
     )
 
+    # Plotly bar chart
     fig = px.bar(
         df_top20,
         x="Defense_USD",
@@ -189,12 +190,12 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
         template="plotly_dark"
     )
 
-    # Bar thickness and clarity
-    fig.update_traces(marker_line_width=0.5, width=0.5)
+    # Make bars thicker and clean
+    fig.update_traces(marker_line_width=0.5, width=0.6)
 
+    # Apply layout (without height/margin overrides)
     fig.update_layout(
         **COMMON_LAYOUT,
-        height=850,
         xaxis=dict(
             title="Defense Spending (USD)",
             showgrid=False,
@@ -203,7 +204,7 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
         yaxis=dict(
             title="",
             tickfont=dict(color="white"),
-            automargin=True
+            categoryorder="array"  # respected due to categorical y
         ),
         uirevision="country_defense_bar_animation",
         showlegend=False
