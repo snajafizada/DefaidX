@@ -216,7 +216,6 @@ def create_defense_gdp_indexed_trend(df: pd.DataFrame, country: str):
     )
     return fig
 
-
 #6--------------------------------------------------------------------------------
 def create_country_defense_trend(df: pd.DataFrame, selected_countries: list[str]):
     if not selected_countries:
@@ -242,12 +241,10 @@ def create_country_defense_trend(df: pd.DataFrame, selected_countries: list[str]
             tickfont=dict(color="white")
         ),
         yaxis=dict(
-            title="Defense Spending (USD)",
+            title="Defense Spending (millions USD)",
             showgrid=False,
             zeroline=False,
-            tickfont=dict(color="white"),
-            range=[0, 1e12],
-            tickformat="~s"
+            tickfont=dict(color="white")
         ),
         **COMMON_LAYOUT
     )
@@ -260,7 +257,6 @@ def create_country_defense_trend(df: pd.DataFrame, selected_countries: list[str]
 def create_defense_spending_over_time(df: pd.DataFrame):
     df_time = df.groupby(["Year", "Continent"], as_index=False)["Defense_USD"].sum()
     df_time["Year"] = df_time["Year"].astype(int)
-
     fig = px.line(
         df_time,
         x="Year", y="Defense_USD", color="Continent",
@@ -279,12 +275,10 @@ def create_defense_spending_over_time(df: pd.DataFrame):
             tickfont=dict(color="white")
         ),
         yaxis=dict(
-            title="Defense Spending (USD)",
+            title="Defense Spending (millions USD)",
             showgrid=False,
             zeroline=False,
-            tickfont=dict(color="white"),
-            range=[0, 1e12],
-            tickformat="~s"
+            tickfont=dict(color="white")
         ),
         **COMMON_LAYOUT
     )
