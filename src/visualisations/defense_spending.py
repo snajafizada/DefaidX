@@ -137,13 +137,15 @@ def create_defense_spending_over_time(df: pd.DataFrame):
             zeroline=False,
             tickfont=dict(color="white")
         ),
-        yaxis=dict(**COMMON_LAYOUT,
-            title="Defense Spending (trillions USD)",
+        yaxis=dict(
+            title="Defense Spending (millions USD)",
             showgrid=False,
             zeroline=False,
+            tickformat=".2s",  # Optional: makes labels readable like 100B, 1T, etc.
+            fixedrange=False,
             tickfont=dict(color="white")
         ),
-        
+        **COMMON_LAYOUT
     )
     return fig
 
@@ -273,7 +275,6 @@ def create_country_defense_trend(df: pd.DataFrame, selected_countries: list[str]
         ),
         yaxis=dict(
             title="Defense Spending (millions USD)",
-            fixedrange=False,
             showgrid=False,
             zeroline=False,
             tickfont=dict(color="white")
