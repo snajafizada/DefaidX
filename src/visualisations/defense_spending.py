@@ -98,8 +98,8 @@ def create_defense_vs_gdp_scatter_excluding_usa_china(df: pd.DataFrame):
         log_x=True,
         log_y=True,
         labels={
-            "GDP": "GDP (USD)",
-            "Defense_USD": "Defense Spending (USD)"
+            "GDP": "GDP (trillion USD)",
+            "Defense_USD": "Defense Spending (millions USD)"
         },
         title="Defense Spending vs GDP (Without USA & China)",
         template="plotly_dark"
@@ -114,38 +114,7 @@ def create_defense_vs_gdp_scatter_excluding_usa_china(df: pd.DataFrame):
 
     return fig
 
-#3------------------------------------------------------------------
-# 🕒  Line – Defense spending over time by continent
-# ------------------------------------------------------------------ 
-def create_defense_spending_over_time(df: pd.DataFrame):
-    df_time = df.groupby(["Year", "Continent"], as_index=False)["Defense_USD"].sum()
-    df_time["Year"] = df_time["Year"].astype(int)
-    fig = px.line(
-        df_time,
-        x="Year", y="Defense_USD", color="Continent",
-        markers=True,
-        title="🕒 Defense Spending Over Time by Continent",
-        template="plotly_dark"
-    )
-    fig.update_layout(
-        dragmode="pan",
-        uirevision="defense_spending_over_time",
-        hovermode="x unified",
-        xaxis=dict(
-            title="Year",
-            showgrid=False,
-            zeroline=False,
-            tickfont=dict(color="white")
-        ),
-        yaxis=dict(
-            title="Defense Spending (millions USD)",
-            showgrid=False,
-            zeroline=False,
-            tickfont=dict(color="white")
-        ),
-        **COMMON_LAYOUT
-    )
-    return fig
+
 
 def create_country_defense_bar_animation(df: pd.DataFrame):
     # Aggregate and rank
@@ -170,7 +139,7 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
         animation_group="Country",
         color="Country",
         title="🏆 Top 20 Defense Spenders Over Time",
-        labels={"Defense_USD": "Defense Spending (USD)"},
+        labels={"Defense_USD": "Defense Spending (millions USD)"},
         template="plotly_dark",
         category_orders={"Country": df_top20["Country"].unique()}
     )
@@ -182,7 +151,7 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
     fig.update_layout(
         **COMMON_LAYOUT,
         xaxis=dict(
-            title="Defense Spending (USD)",
+            title="Defense Spending (millions USD)",
             showgrid=False,
             tickfont=dict(color="white")
         ),
@@ -247,6 +216,7 @@ def create_defense_gdp_indexed_trend(df: pd.DataFrame, country: str):
     )
     return fig
 
+
 #6--------------------------------------------------------------------------------
 def create_country_defense_trend(df: pd.DataFrame, selected_countries: list[str]):
     if not selected_countries:
@@ -272,10 +242,49 @@ def create_country_defense_trend(df: pd.DataFrame, selected_countries: list[str]
             tickfont=dict(color="white")
         ),
         yaxis=dict(
-            title="Defense Spending (millions USD)",
+            title="Defense Spending (USD)",
+            showgrid=False,
+            zeroline=False,
+            tickfont=dict(color="white"),
+            range=[0, 1e12],
+            tickformat="~s"
+        ),
+        **COMMON_LAYOUT
+    )
+    return fig
+
+
+#3------------------------------------------------------------------
+# 🕒  Line – Defense spending over time by continent
+# ------------------------------------------------------------------ 
+def create_defense_spending_over_time(df: pd.DataFrame):
+    df_time = df.groupby(["Year", "Continent"], as_index=False)["Defense_USD"].sum()
+    df_time["Year"] = df_time["Year"].astype(int)
+
+    fig = px.line(
+        df_time,
+        x="Year", y="Defense_USD", color="Continent",
+        markers=True,
+        title="🕒 Defense Spending Over Time by Continent",
+        template="plotly_dark"
+    )
+    fig.update_layout(
+        dragmode="pan",
+        uirevision="defense_spending_over_time",
+        hovermode="x unified",
+        xaxis=dict(
+            title="Year",
             showgrid=False,
             zeroline=False,
             tickfont=dict(color="white")
+        ),
+        yaxis=dict(
+            title="Defense Spending (USD)",
+            showgrid=False,
+            zeroline=False,
+            tickfont=dict(color="white"),
+            range=[0, 1e12],
+            tickformat="~s"
         ),
         **COMMON_LAYOUT
     )
