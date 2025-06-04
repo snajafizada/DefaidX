@@ -138,10 +138,10 @@ def create_defense_spending_over_time(df: pd.DataFrame):
             tickfont=dict(color="white")
         ),
         yaxis=dict(
-            title="Defense Spending (millions USD)",
+            title="Defense Spending (tillions USD)",
             showgrid=False,
             zeroline=False,
-            tickformat=".2s",  # Optional: makes labels readable like 100B, 1T, etc.
+            tickformat=".2s",  
             fixedrange=False,
             tickfont=dict(color="white")
         ),
