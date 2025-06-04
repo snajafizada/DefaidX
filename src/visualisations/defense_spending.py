@@ -141,7 +141,8 @@ def create_defense_spending_over_time(df: pd.DataFrame):
             title="Defense Spending (millions USD)",
             showgrid=False,
             zeroline=False,
-            range=[0,90000000],
+            tickformat=".2s",  # Optional: makes labels readable like 100B, 1T, etc.
+            fixedrange=False,
             tickfont=dict(color="white")
         ),
         **COMMON_LAYOUT
