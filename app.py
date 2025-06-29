@@ -1,18 +1,19 @@
 import streamlit as st
 import sys
 import os
+st.cache_data.clear()
 
-# ── MUST be first Streamlit command ───────────────────────────────────────
+
 st.set_page_config(page_title="DefaidX", layout="wide")
 
 
-# ── Make src/ importable ──────────────────────────────────────────────────
+# ── Make src/ importable
 sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 
-# ── Import page modules (each must expose the shown function) ─────────────
+# ── Import page modules (each must expose the shown function)
 from pages import Home, About, Explore, Insights, Contact  # noqa: E402
 
-# ── Initialise / sync navigation state ────────────────────────────────────
+# ── Initialise / sync navigation state 
 if "page" not in st.session_state:
     st.session_state["page"] = "Home"
 
@@ -29,7 +30,7 @@ if selected != st.session_state["page"]:
     st.session_state["page"] = selected
     st.rerun()
 
-# ── Render the chosen page ────────────────────────────────────────────────
+# ── Render the chosen page 
 page = st.session_state["page"]
 
 if page == "Home":
