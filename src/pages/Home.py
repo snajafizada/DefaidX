@@ -7,23 +7,22 @@ def show_home():
         "<h1 style='font-size:32px;color:#A970FF;font-weight:bold;'>Welcome to DefaidX</h1>",
         unsafe_allow_html=True,
     )
-
+    
+    
     st.markdown(
-        """
-        <p style='font-size:14px;color:#E0E0E0;line-height:1.5;'>
-            Curious about defense and development spending? 
-            
-            <br>
+    """
+    <p style='font-size:14px;color:#E0E0E0;line-height:1.5;'>
+        Curious about defense and development spending? 
+        <br>
+        <strong>DefaidX</strong> lets you explore this for more than 100 countries — right here!
+    </p>
 
-            <strong>DefaidX</strong> lets you explore this for more than 100 countries — right here!
-        </p>
-
-        <p style='font-size:13px;color:#BBBBBB;line-height:1.3;'>
-            🔍 Use the sidebar to explore our powerful interactive visuals and insights.
-        </p>
-        """,
-        unsafe_allow_html=True,
-    )
+    <p style='font-size:13px;color:#BBBBBB;line-height:1.3;'>
+        🔍 Use the sidebar to explore our powerful interactive visuals and insights.
+    </p>
+    """,
+    unsafe_allow_html=True
+)
 
     st.markdown("<hr style='border-color:#444;'>", unsafe_allow_html=True)
 

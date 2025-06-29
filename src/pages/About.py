@@ -6,7 +6,7 @@ def show_about():
         <h1 style='font-size:42px;color:#A970FF;font-weight:bold;'>About DefaidX</h1>
         
         <p style='font-size:16px;color:#E0E0E0;line-height:1.6;'>
-        <strong style='color:#FFFFFF;'>DefaidX</strong> DeFaidX is a data storytelling project that explores the public financing of arms and aid — and how these spending choices shape global development.
+        <strong style='color:#FFFFFF;'>DefaidX</strong> is a data storytelling project that explores the public financing of arms and aid — and how these spending choices shape global development.
         </p>
 
         <p style='font-size:15px;color:#E0E0E0;line-height:1.6;'>
