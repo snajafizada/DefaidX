@@ -252,7 +252,7 @@ def create_defense_gdp_indexed_trend(df: pd.DataFrame, country: str):
 #6--------------------------------------------------------------------------------
 def create_country_defense_trend(df: pd.DataFrame, selected_countries: list[str]):
     if not selected_countries:
-        return None
+        return 
 
     filt = df[df["Country"].isin(selected_countries)].copy()
     filt["Year"] = filt["Year"].astype(int)
@@ -285,3 +285,4 @@ def create_country_defense_trend(df: pd.DataFrame, selected_countries: list[str]
         **COMMON_LAYOUT
     )
     return fig
+
