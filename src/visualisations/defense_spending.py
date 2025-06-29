@@ -82,12 +82,15 @@ def create_defense_vs_gdp_scatter_excluding_usa_china(df: pd.DataFrame):
     # Drop rows with NaNs in columns used
     df_clean = df.dropna(subset=['Defense_USD', 'GDP', 'Year', 'Country', 'Continent'])
 
-    if df_clean.empty: 
+    if df_clean.empty:
         return None
+
+    # Convert GDP to trillion USD
+    df_clean["GDP_trillion"] = df_clean["GDP"] / 1_000_000  # since GDP is in million USD
 
     fig = px.scatter(
         df_clean,
-        x='GDP',
+        x='GDP_trillion',
         y='Defense_USD',
         animation_frame='Year',
         animation_group='Country',
@@ -98,8 +101,8 @@ def create_defense_vs_gdp_scatter_excluding_usa_china(df: pd.DataFrame):
         log_x=True,
         log_y=True,
         labels={
-            "GDP": "GDP (trillion USD)",
-            "Defense_USD": "Defense Spending (millions USD)"
+            "GDP_trillion": "GDP (trillion USD)",
+            "Defense_USD": "Defense Spending (million USD)"
         },
         title="Defense Spending vs GDP (Without USA & China)",
         template="plotly_dark"
@@ -108,11 +111,10 @@ def create_defense_vs_gdp_scatter_excluding_usa_china(df: pd.DataFrame):
     # Clean layout: remove grid lines
     fig.update_xaxes(showgrid=False, zeroline=False)
     fig.update_yaxes(showgrid=False, zeroline=False)
-    fig.update_layout(
-        **COMMON_LAYOUT
-    )
+    fig.update_layout(**COMMON_LAYOUT)
 
     return fig
+
 
 #3------------------------------------------------------------------
 # 🕒  Line – Defense spending over time by continent
