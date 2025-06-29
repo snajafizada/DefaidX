@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from typing import Optional
 
-# Path to the unified metadata file that contains Country, ISO3, lat, lon
+
 COUNTRY_COORDS_CSV = r"C:\Users\snaja\OneDrive\defaidX\data\clean\all\country_coordinates.csv"
 
 ###############################################################################
@@ -23,7 +23,7 @@ def _load_country_metadata(csv_path: str = COUNTRY_COORDS_CSV) -> pd.DataFrame:
     """
     df = pd.read_csv(csv_path)
 
-    # ── Normalise header casing / spelling ────────────────────────────────────
+    # ── Normalising header casing / spelling
     df.rename(columns=lambda c: c.strip(), inplace=True)
 
     # ISO column

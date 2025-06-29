@@ -57,7 +57,7 @@ def render_country_defense_trend(df):
     countries = st.multiselect(
          "Select Countries:",
          options=sorted(df["Country"].unique()),
-         default=["United States", "China"]  # or your preferred default
+         default=["United States", "China"] 
     )
     if countries:
         fig = create_country_defense_trend(df, countries)

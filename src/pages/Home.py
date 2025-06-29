@@ -11,13 +11,15 @@ def show_home():
     st.markdown(
         """
         <p style='font-size:14px;color:#E0E0E0;line-height:1.5;'>
-            Curious how the world’s priorities are shifting between power and progress?<br>
-            <strong>DefaidX</strong> lets you explore the evolution of global spending on arms versus aid —
-            revealing the stories behind the numbers shaping the future of geopolitics.
+            Curious about defense and development spending? 
+            
+            <br>
+
+            <strong>DefaidX</strong> lets you explore this for more than 100 countries — right here!
         </p>
 
         <p style='font-size:13px;color:#BBBBBB;line-height:1.3;'>
-            🔍 Use the sidebar to explore our interactive visuals and insights.
+            🔍 Use the sidebar to explore our powerful interactive visuals and insights.
         </p>
         """,
         unsafe_allow_html=True,
@@ -28,9 +30,9 @@ def show_home():
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("📊 Visualizations")
+        st.subheader("📊 Interactive Visuals")
         st.markdown(
-            "<p style='color:#DDDDDD;font-size:14px;'>Interactive dashboards.</p>",
+            "<p style='color:#DDDDDD;font-size:14px;'>See the world in charts.</p>",
             unsafe_allow_html=True,
         )
         if st.button("Go to Explore"):
@@ -40,7 +42,7 @@ def show_home():
     with col2:
         st.subheader("🧠 Insights")
         st.markdown(
-            "<p style='color:#DDDDDD;font-size:14px;'>Uncover stories behind the data.</p>",
+            "<p style='color:#DDDDDD;font-size:14px;'>See what the numbers reveal.</p>",
             unsafe_allow_html=True,
         )
         if st.button("Go to Insights"):
@@ -48,7 +50,7 @@ def show_home():
             st.rerun()
 
     st.markdown("<hr style='border-color:#444;'>", unsafe_allow_html=True)
-    st.info("🚧 More features coming soon!")
+    st.info("🚧 More coming soon!")
 
     data_path = "data/clean/all/merged_long_1992-2023.csv"
     df = pd.read_csv(data_path)

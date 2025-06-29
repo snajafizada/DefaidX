@@ -15,9 +15,9 @@ def show_insights():
     )
 
     st.write("...")
-    # You could dynamically display HTML reports from the assets/insights folder
-    #st.markdown(open("assets/insights/how_military_aid_affects_development.html", "r").read(), unsafe_allow_html=True)
+    # here I will dynamically display HTML reports from the assets/insights folder
+    #st.markdown(open("assets/insights/nameofthefiletitleofthereport.html", "r").read(), unsafe_allow_html=True)
 
 
-#insight_path = Path("assets/insights/aid/oda.html")
+#insight_path = Path("assets/insights/aid/titleofthereport.html")
 #show_html_insight(insight_path)

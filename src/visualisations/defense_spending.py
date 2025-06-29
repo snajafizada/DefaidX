@@ -2,9 +2,6 @@
 """
 defense_spending.py
 -------------------
-Reusable Plotly visualisation builder functions
-(mobile-optimised for Streamlit).
-
 Author: DefaidX team
 """
 
@@ -13,8 +10,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 # ------------------------------------------------------------------ #
-# 🔧  Common layout applied to every figure for consistent dark theme
-#     and mobile-friendly sizing / behaviour.
+# Common layout 
 # ------------------------------------------------------------------ #
 COMMON_LAYOUT = dict(
     autosize=True,
@@ -56,13 +52,13 @@ def create_choropleth_map(df: pd.DataFrame):
     )
 
     fig.update_layout(
-        dragmode="zoom",  # allows zooming directly on the map
+        dragmode="zoom",  
         uirevision="choropleth_map",
         coloraxis_colorbar=dict(
             orientation="h",
             x=0.5,
             xanchor="center",
-            y=1.1,  # move above the map
+            y=1.1,  
             title=dict(text="Defense % of GDP", font=dict(color="white")),
             tickfont=dict(color="white")
         ),
@@ -71,22 +67,15 @@ def create_choropleth_map(df: pd.DataFrame):
 
     return fig
 
-
-
-#2-------------------------------------------------------------------------------
-
+#2-------------------------------------------------------------------------------#
 def create_defense_vs_gdp_scatter_excluding_usa_china(df: pd.DataFrame):
-    # Filter out USA and China
+    # Filtering out USA and China as they are outliers and outperforms therest
     df = df[(df['Country'] != 'United States') & (df['Country'] != 'China')]
-
-    # Drop rows with NaNs in columns used
     df_clean = df.dropna(subset=['Defense_USD', 'GDP', 'Year', 'Country', 'Continent'])
-
     if df_clean.empty:
         return None
 
-    # Convert GDP to trillion USD
-    df_clean["GDP_trillion"] = df_clean["GDP"] / 1_000_000  # since GDP is in million USD
+    df_clean["GDP_trillion"] = df_clean["GDP"] / 1_000_000  # since we want it in trillions
 
     fig = px.scatter(
         df_clean,
@@ -116,9 +105,7 @@ def create_defense_vs_gdp_scatter_excluding_usa_china(df: pd.DataFrame):
     return fig
 
 
-#3------------------------------------------------------------------
-# 🕒  Line – Defense spending over time by continent
-# ------------------------------------------------------------------ 
+#3------------------------------------------------------------------# 
 def create_defense_spending_over_time(df: pd.DataFrame):
     df_time = df.groupby(["Year", "Continent"], as_index=False)["Defense_USD"].sum()
     df_time["Year"] = df_time["Year"].astype(int)
@@ -152,17 +139,14 @@ def create_defense_spending_over_time(df: pd.DataFrame):
     return fig
 
 def create_country_defense_bar_animation(df: pd.DataFrame):
-    # Aggregate and rank
     df_ranked = (
         df.groupby(["Year", "Country"], as_index=False)["Defense_USD"].sum()
         .sort_values(["Year", "Defense_USD"], ascending=[True, False])
     )
     df_ranked["Rank"] = df_ranked.groupby("Year")["Defense_USD"].rank(ascending=False, method="first")
 
-    # Keep only Top 20 per year
-    df_top20 = df_ranked[df_ranked["Rank"] <= 20]
+    df_top20 = df_ranked[df_ranked["Rank"] <= 20] # Keeping only Top 20 since its a bar chart
 
-    # Ensure Country is string type
     df_top20["Country"] = df_top20["Country"].astype(str)
 
     fig = px.bar(
@@ -179,10 +163,7 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
         category_orders={"Country": df_top20["Country"].unique()}
     )
 
-    # Make bars thicker
     fig.update_traces(marker_line_width=1, width=0.5)
-
-    # Layout
     fig.update_layout(
         **COMMON_LAYOUT,
         xaxis=dict(
@@ -193,7 +174,7 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
         yaxis=dict(
             title="",
             tickfont=dict(color="white"),
-            categoryorder="total ascending"  # Highest spender at top
+            categoryorder="total ascending"  
         ),
         uirevision="country_defense_bar_animation",
         showlegend=False
@@ -202,9 +183,6 @@ def create_country_defense_bar_animation(df: pd.DataFrame):
     return fig
 
 #5--------------------------------------------------------------------
-# ------------------------------------------------------------------ #
-# 📈  Indexed trend – Defense & GDP (dropdown country selector)
-# ------------------------------------------------------------------ #
 def create_defense_gdp_indexed_trend(df: pd.DataFrame, country: str):
     df = df.dropna(subset=["Defense_USD", "GDP"]).copy()
     df["Year"] = df["Year"].astype(int)
